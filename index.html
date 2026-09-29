@@ -71,17 +71,9 @@
     }
 
     @keyframes gradientMove {
-      0% {
-        background-position: 0% 50%;
-      }
-
-      50% {
-        background-position: 100% 50%;
-      }
-
-      100% {
-        background-position: 0% 50%;
-      }
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* ===== کانواس ذرات ===== */
@@ -110,12 +102,8 @@
       text-align: center;
       box-shadow: 0 15px 40px var(--shadow);
       border: 1px solid var(--border);
-      transition:
-        transform 0.3s ease,
-        background 0.4s ease;
+      transition: transform 0.3s ease, background 0.4s ease;
       animation: cardIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-      /* 👇 بهینه‌سازی رندر */
       will-change: transform;
       transform: translateZ(0);
       backface-visibility: hidden;
@@ -123,22 +111,12 @@
     }
 
     @keyframes cardIn {
-      0% {
-        opacity: 0;
-        transform: translateY(40px) scale(0.9);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* فقط روی کامپیوتر هاور کار کنه */
     @media (hover: hover) and (pointer: fine) {
-      .card:hover {
-        transform: translateY(-8px);
-      }
+      .card:hover { transform: translateY(-8px); }
     }
 
     /* ===== دکمه تم ===== */
@@ -154,15 +132,11 @@
       color: var(--text);
       font-size: 17px;
       cursor: pointer;
-      transition:
-        transform 0.3s,
-        background 0.3s;
+      transition: transform 0.3s, background 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 3;
-
-      /* 👇 بهینه‌سازی لمسی */
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
@@ -193,15 +167,8 @@
     }
 
     @keyframes clockFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .clock-time {
@@ -224,16 +191,8 @@
     }
 
     @keyframes blinkSep {
-
-      0%,
-      49% {
-        opacity: 1;
-      }
-
-      50%,
-      100% {
-        opacity: 0.3;
-      }
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.3; }
     }
 
     .clock-date {
@@ -250,46 +209,26 @@
       width: 110px;
       height: 110px;
       border-radius: 50%;
-      background: linear-gradient(135deg,
-          var(--primary),
-          var(--primary-dark));
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       margin: 25px auto 15px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 60px;
-      animation:
-        float 3s ease-in-out infinite,
-        pulse 4s ease-in-out infinite;
-
-      /* 👇 بهینه‌سازی رندر */
+      animation: float 3s ease-in-out infinite, pulse 4s ease-in-out infinite;
       will-change: transform;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
 
     @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-8px);
-      }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
     @keyframes pulse {
-
-      0%,
-      100% {
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-      }
-
-      50% {
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.9);
-      }
+      0%, 100% { box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+      50% { box-shadow: 0 8px 32px rgba(102, 126, 234, 0.9); }
     }
 
     /* ===== متن‌ها ===== */
@@ -297,10 +236,7 @@
       color: var(--text);
       margin-bottom: 8px;
       font-size: 26px;
-      background: linear-gradient(90deg,
-          var(--primary),
-          var(--primary-dark),
-          var(--primary));
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark), var(--primary));
       background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -309,9 +245,7 @@
     }
 
     @keyframes shine {
-      to {
-        background-position: 200% center;
-      }
+      to { background-position: 200% center; }
     }
 
     #typingText {
@@ -330,16 +264,8 @@
     }
 
     @keyframes blink {
-
-      0%,
-      50% {
-        opacity: 1;
-      }
-
-      51%,
-      100% {
-        opacity: 0;
-      }
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
     }
 
     /* ===== دکمه‌ها ===== */
@@ -357,9 +283,7 @@
       justify-content: center;
       gap: 8px;
       padding: 13px 20px;
-      background: linear-gradient(135deg,
-          var(--primary),
-          var(--primary-dark));
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: #fff;
       border-radius: 25px;
       text-decoration: none;
@@ -368,16 +292,12 @@
       font-family: inherit;
       border: none;
       cursor: pointer;
-      transition:
-        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-        box-shadow 0.2s ease;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
       opacity: 0;
       transform: translateY(15px);
       animation: btnIn 0.5s ease forwards;
       position: relative;
       overflow: hidden;
-
-      /* 👇 بهینه‌سازی لمسی */
       will-change: transform;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
@@ -387,35 +307,15 @@
       -webkit-user-select: none;
     }
 
-    .btn:nth-child(1) {
-      animation-delay: 0.3s;
-    }
-
-    .btn:nth-child(2) {
-      animation-delay: 0.45s;
-    }
-
-    .btn:nth-child(3) {
-      animation-delay: 0.6s;
-    }
-
-    .btn:nth-child(4) {
-      animation-delay: 0.75s;
-    }
-
-    .btn:nth-child(5) {
-      animation-delay: 0.9s;
-    }
-
-    .btn:nth-child(6) {
-      animation-delay: 1.05s;
-    }
+    .btn:nth-child(1) { animation-delay: 0.3s; }
+    .btn:nth-child(2) { animation-delay: 0.45s; }
+    .btn:nth-child(3) { animation-delay: 0.6s; }
+    .btn:nth-child(4) { animation-delay: 0.75s; }
+    .btn:nth-child(5) { animation-delay: 0.9s; }
+    .btn:nth-child(6) { animation-delay: 1.05s; }
 
     @keyframes btnIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .btn:hover {
@@ -434,16 +334,55 @@
       right: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg,
-          transparent,
-          rgba(255, 255, 255, 0.35),
-          transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
       transition: right 0.6s;
       pointer-events: none;
     }
 
-    .btn:hover::before {
-      right: 100%;
+    .btn:hover::before { right: 100%; }
+
+    /* 👇 استایل جدید برای آیکون‌ها */
+    .btn .btn-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      color: #fff;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+      overflow: hidden;
+    }
+
+    .btn .btn-icon svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* 🎨 رنگ‌های اختصاصی هر برند */
+    .icon-aparat { background-color: #ED145B; }
+    .icon-telegram { background-color: #0088cc; }
+    .icon-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+    .icon-discord { background-color: #5865F2; }
+    .icon-rubika { background-color: #714add; }
+    
+    /* 🎨 آیکون سیب‌مو دقیقاً طبق عکس ارسالی (مربع گرد سفید با S بنفش) */
+    .icon-sibmo { 
+      background-color: #FFFFFF !important; /* پس‌زمینه سفید */
+      border-radius: 6px !important; /* گوشه‌های گرد مثل عکس */
+      color: #6C5B7B !important; /* رنگ 'S' بنفش/خاکستری */
+      font-family: Arial, sans-serif !important;
+      font-weight: 900 !important;
+      font-size: 18px !important;
+      line-height: 1 !important;
+    }
+    
+    .icon-about { background-color: var(--primary); }
+
+    .btn:hover .btn-icon {
+      transform: scale(1.1) rotate(-10deg);
     }
 
     /* ===== خط جداکننده ===== */
@@ -465,25 +404,28 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .about-text {
       color: var(--text);
-      font-size: 14px;
-      line-height: 1.9;
+      font-size: 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 2.4;
       text-align: right;
       min-height: 150px;
-      white-space: pre-wrap;
       direction: rtl;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 0 5px;
+    }
+
+    .about-text p {
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
 
     .back-btn {
@@ -517,15 +459,8 @@
     }
 
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .play-btn {
@@ -534,9 +469,7 @@
       height: 44px;
       border-radius: 50%;
       border: none;
-      background: linear-gradient(135deg,
-          var(--primary),
-          var(--primary-dark));
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: #fff;
       font-size: 16px;
       cursor: pointer;
@@ -546,21 +479,14 @@
       flex-shrink: 0;
       transition: transform 0.2s;
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-
-      /* 👇 بهینه‌سازی لمسی */
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
     }
 
-    .play-btn:hover {
-      transform: scale(1.08);
-    }
-
-    .play-btn:active {
-      transform: scale(0.95);
-    }
+    .play-btn:hover { transform: scale(1.08); }
+    .play-btn:active { transform: scale(0.95); }
 
     .play-btn::before {
       content: "";
@@ -580,11 +506,7 @@
       animation: spin 1.2s linear infinite;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .player-info {
       flex: 1;
@@ -615,13 +537,8 @@
     }
 
     @keyframes bounce {
-      from {
-        transform: translateY(0);
-      }
-
-      to {
-        transform: translateY(-4px);
-      }
+      from { transform: translateY(0); }
+      to { transform: translateY(-4px); }
     }
 
     .progress-bar {
@@ -632,8 +549,6 @@
       cursor: pointer;
       overflow: hidden;
       position: relative;
-
-      /* 👇 بهینه‌سازی لمسی */
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
@@ -671,17 +586,13 @@
       cursor: pointer;
       padding: 4px;
       transition: transform 0.2s;
-
-      /* 👇 بهینه‌سازی لمسی */
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
     }
 
-    .volume-btn:hover {
-      transform: scale(1.15);
-    }
+    .volume-btn:hover { transform: scale(1.15); }
 
     .volume-slider {
       -webkit-appearance: none;
@@ -707,9 +618,7 @@
       transition: transform 0.2s;
     }
 
-    .volume-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-    }
+    .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
     .volume-slider::-moz-range-thumb {
       width: 12px;
@@ -722,9 +631,7 @@
     }
 
     /* ===== کلاس مخفی ===== */
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     /* ===== فوتر ===== */
     .footer {
@@ -747,62 +654,20 @@
 
     /* ===== ریسپانسیو ===== */
     @media (max-width: 400px) {
-      .card {
-        padding: 25px 18px 20px;
-        border-radius: 18px;
-      }
-
-      .avatar {
-        width: 90px;
-        height: 90px;
-        font-size: 50px;
-        margin-top: 30px;
-      }
-
-      .card h2 {
-        font-size: 22px;
-      }
-
-      .btn {
-        font-size: 14px;
-        padding: 12px 16px;
-      }
-
-      .clock-box {
-        padding: 5px 9px;
-        border-radius: 12px;
-      }
-
-      .clock-time {
-        font-size: 12px;
-      }
-
-      .clock-date {
-        font-size: 9px;
-      }
-
-      .theme-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 15px;
-      }
-
-      .volume-slider {
-        width: 40px;
-      }
-
-      .play-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 14px;
-      }
+      .card { padding: 25px 18px 20px; border-radius: 18px; }
+      .avatar { width: 90px; height: 90px; font-size: 50px; margin-top: 30px; }
+      .card h2 { font-size: 22px; }
+      .btn { font-size: 14px; padding: 12px 16px; }
+      .clock-box { padding: 5px 9px; border-radius: 12px; }
+      .clock-time { font-size: 12px; }
+      .clock-date { font-size: 9px; }
+      .theme-btn { width: 34px; height: 34px; font-size: 15px; }
+      .volume-slider { width: 40px; }
+      .play-btn { width: 40px; height: 40px; font-size: 14px; }
     }
 
-    /* 👇 روی موبایل انیمیشن پس‌زمینه رو آروم‌تر کن */
     @media (max-width: 768px) {
-      body {
-        animation-duration: 20s;
-      }
+      body { animation-duration: 20s; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -819,29 +684,21 @@
   <canvas id="particles"></canvas>
 
   <div class="card">
-    <!-- دکمه تم -->
-    <button class="theme-btn" id="themeBtn" title="تغییر تم" aria-label="تغییر تم">
-      🌙
-    </button>
+    <button class="theme-btn" id="themeBtn" title="تغییر تم" aria-label="تغییر تم">🌙</button>
 
-    <!-- ساعت و تاریخ -->
     <div class="clock-box">
       <div class="clock-time" id="clockTime">
-        <span id="h">00</span><span class="sep">:</span><span id="m">00</span><span class="sep">:</span><span
-          id="s">00</span>
+        <span id="h">00</span><span class="sep">:</span><span id="m">00</span><span class="sep">:</span><span id="s">00</span>
       </div>
       <div class="clock-date" id="clockDate">—</div>
     </div>
 
-    <!-- آواتار و اطلاعات -->
     <div class="avatar">🍍</div>
     <h2>NIXI</h2>
     <p id="typingText"></p>
 
-    <!-- ===== پخش‌کننده موزیک ===== -->
     <div class="music-player" id="musicPlayer">
       <button class="play-btn" id="playBtn" aria-label="پخش / توقف">▶</button>
-
       <div class="player-info">
         <div class="player-title">
           <span class="note">🎵</span>
@@ -855,7 +712,6 @@
           <span id="duration">0:00</span>
         </div>
       </div>
-
       <div class="volume-control">
         <button class="volume-btn" id="volumeBtn" aria-label="صدا">🔊</button>
         <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.7" />
@@ -864,28 +720,58 @@
 
     <!-- ===== دکمه‌ها ===== -->
     <div class="buttons" id="mainButtons">
+      <!-- Aparat -->
       <a title="Nixi" href="https://www.aparat.com/hysnixi/live" class="btn" target="_blank" rel="noopener">
-        📺 <b>Aparat</b>
+        <span class="btn-icon icon-aparat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4-7-4z"/></svg>
+        </span>
+        <b>Aparat</b>
       </a>
+      <!-- Telegram -->
       <a href="https://t.me/HysNixi" class="btn" target="_blank" rel="noopener">
-        ✈️ <b>Telegram</b></a>
+        <span class="btn-icon icon-telegram">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.27 1.37.18 1.14 1.31l-2.72 12.81c-.22.99-.83 1.24-1.67.76l-4.46-3.28-2.16 2.09c-.26.26-.47.47-.94.47z"/></svg>
+        </span>
+        <b>Telegram</b>
+      </a>
+      <!-- Instagram -->
       <a href="https://instagram.com/hysnixi" class="btn" target="_blank" rel="noopener">
-        📷 <b>Instagram</b>
+        <span class="btn-icon icon-instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </span>
+        <b>Instagram</b>
       </a>
+      <!-- Discord -->
       <a href="https://discord.gg/RkVkwgzYue" class="btn" target="_blank" rel="noopener">
-        🎬<b>Discord</b></a>
-      <a href="http://rubika.ir/Hysnixi" class="btn" target="_blank" rel="noopener">💬<b>Rubika</b>
+        <span class="btn-icon icon-discord">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+        </span>
+        <b>Discord</b>
       </a>
-      <a href="https://sibmo.ir/hysnixi" class="btn" target="_blank" rel="noopener"><b>Sibmo</b></a>
+      <!-- Rubika -->
+      <a href="http://rubika.ir/Hysnixi" class="btn" target="_blank" rel="noopener">
+        <span class="btn-icon icon-rubika">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        </span>
+        <b>Rubika</b>
+      </a>
+      <!-- Sibmo (مربع گرد سفید با حرف S بنفش) -->
+      <a href="https://sibmo.ir/hysnixi" class="btn" target="_blank" rel="noopener">
+        <span class="btn-icon icon-sibmo">S</span>
+        <b>Sibmo</b>
+      </a>
 
-      <!-- خط جداکننده -->
       <div class="divider"></div>
 
-      <!-- دکمه درباره من -->
-      <button class="btn" id="aboutBtn">👤 <i>About Me</i></button>
+      <!-- About Me -->
+      <button class="btn" id="aboutBtn">
+        <span class="btn-icon icon-about">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </span>
+        <b>About Me</b>
+      </button>
     </div>
 
-    <!-- ===== بخش درباره من (مخفی) ===== -->
     <div id="aboutSection" class="hidden">
       <button class="btn back-btn" id="backBtn">⬅️<b>Back</b></button>
       <p class="about-text" id="aboutText"></p>
@@ -894,7 +780,6 @@
     <div class="footer">⏰ Created By: HYS_Clock</div>
   </div>
 
-  <!-- فایل موزیک -->
   <audio id="bgMusic" loop preload="metadata">
     <source src="a.mp3" type="audio/mpeg">
     مرورگر شما از پخش موزیک پشتیبانی نمی‌کند.
@@ -981,15 +866,9 @@
 
     /* ========== ۴. کانفتی ========== */
     const colors = [
-      "#667eea",
-      "#764ba2",
-      "#ff6b6b",
-      "#feca57",
-      "#48dbfb",
-      "#1dd1a1",
+      "#667eea", "#764ba2", "#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1",
     ];
 
-    // 👇 روی موبایل تعداد کانفتی کمتر = روون‌تر
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const confettiCount = isMobile ? 18 : 30;
 
@@ -997,8 +876,7 @@
       for (let i = 0; i < confettiCount; i++) {
         const c = document.createElement("div");
         c.className = "confetti";
-        c.style.background =
-          colors[Math.floor(Math.random() * colors.length)];
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
         c.style.left = x + "px";
         c.style.top = y + "px";
         c.style.transform = `translate3d(0,0,0) rotate(${Math.random() * 360}deg)`;
@@ -1006,8 +884,7 @@
 
         const angle = Math.random() * Math.PI * 2;
         const velocity = 4 + Math.random() * 6;
-        let posX = x,
-          posY = y;
+        let posX = x, posY = y;
         let velX = Math.cos(angle) * velocity;
         let velY = Math.sin(angle) * velocity - 4;
         let rotation = Math.random() * 360;
@@ -1057,18 +934,12 @@
     function formatTime(seconds) {
       if (isNaN(seconds)) return "0:00";
       const m = Math.floor(seconds / 60);
-      const s = Math.floor(seconds % 60)
-        .toString()
-        .padStart(2, "0");
+      const s = Math.floor(seconds % 60).toString().padStart(2, "0");
       return `${m}:${s}`;
     }
 
     playBtn.addEventListener("click", () => {
-      if (audio.paused) {
-        audio.play();
-      } else {
-        audio.pause();
-      }
+      if (audio.paused) { audio.play(); } else { audio.pause(); }
     });
 
     audio.addEventListener("play", () => {
@@ -1115,13 +986,9 @@
     });
 
     function updateVolumeIcon() {
-      if (audio.volume === 0) {
-        volumeBtn.textContent = "🔇";
-      } else if (audio.volume < 0.5) {
-        volumeBtn.textContent = "🔉";
-      } else {
-        volumeBtn.textContent = "🔊";
-      }
+      if (audio.volume === 0) { volumeBtn.textContent = "🔇"; }
+      else if (audio.volume < 0.5) { volumeBtn.textContent = "🔉"; }
+      else { volumeBtn.textContent = "🔊"; }
     }
     updateVolumeIcon();
 
@@ -1132,7 +999,6 @@
     const backBtn = document.getElementById("backBtn");
     const mainButtons = document.getElementById("mainButtons");
 
-    // 👇 اینجا متن اصلی خودت رو بنویس (به جای متن نمونه زیر)
     const aboutContent = `نيكسى هستم، اسم واقعيم
 
 هانيه ست، 25 ساله 
@@ -1164,20 +1030,20 @@
 
 خيلى زود هم وارد دنياى souls like مى شيم:) و...`;
 
-    // تابع تایپ کلمه به کلمه
-    function typeWriter(text, element, speed = 150) {
-      element.textContent = "";
-      const words = text.split(" ");
-      let i = 0;
+    function showAboutTextLineByLine(text, element) {
+      element.innerHTML = "";
+      const lines = text.split("\n").filter((line) => line.trim() !== "");
 
-      function type() {
-        if (i < words.length) {
-          element.textContent += (i === 0 ? "" : " ") + words[i];
-          i++;
-          setTimeout(type, speed);
-        }
-      }
-      type();
+      lines.forEach((line, index) => {
+        const p = document.createElement("p");
+        p.textContent = line.trim();
+        element.appendChild(p);
+
+        setTimeout(() => {
+          p.style.opacity = "1";
+          p.style.transform = "translateY(0)";
+        }, index * 250);
+      });
     }
 
     aboutBtn.addEventListener("click", (e) => {
@@ -1185,7 +1051,7 @@
       mainButtons.classList.add("hidden");
       musicPlayer.classList.add("hidden");
       aboutSection.classList.remove("hidden");
-      typeWriter(aboutContent, aboutText, 150);
+      showAboutTextLineByLine(aboutContent, aboutText);
     });
 
     backBtn.addEventListener("click", () => {
@@ -1207,30 +1073,11 @@
     resize();
     window.addEventListener("resize", resize, { passive: true });
 
-    window.addEventListener(
-      "mousemove",
-      (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
-      },
-      { passive: true },
-    );
-
-    window.addEventListener(
-      "touchmove",
-      (e) => {
-        if (e.touches.length > 0) {
-          mouse.x = e.touches[0].clientX;
-          mouse.y = e.touches[0].clientY;
-        }
-      },
-      { passive: true },
-    );
-
-    window.addEventListener("mouseout", () => {
-      mouse.x = null;
-      mouse.y = null;
-    });
+    window.addEventListener("mousemove", (e) => { mouse.x = e.x; mouse.y = e.y; }, { passive: true });
+    window.addEventListener("touchmove", (e) => {
+      if (e.touches.length > 0) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+    }, { passive: true });
+    window.addEventListener("mouseout", () => { mouse.x = null; mouse.y = null; });
 
     class Particle {
       constructor() {
@@ -1271,12 +1118,8 @@
 
     function initParticles() {
       particles = [];
-      // 👇 روی موبایل تعداد ذرات کمتر = روون‌تر
       const maxParticles = isMobile ? 40 : 80;
-      const count = Math.min(
-        maxParticles,
-        Math.floor((canvas.width * canvas.height) / 18000),
-      );
+      const count = Math.min(maxParticles, Math.floor((canvas.width * canvas.height) / 18000));
       for (let i = 0; i < count; i++) {
         particles.push(new Particle());
       }
