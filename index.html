@@ -380,7 +380,6 @@
       border-radius: 2px;
     }
 
-    /* 👇 استایل بخش درباره من (بدون انیمیشن قبلی - با ترنزیشن جایگزین شد) */
     #aboutSection {
       display: flex;
       flex-direction: column;
@@ -608,12 +607,8 @@
       box-shadow: 0 2px 6px rgba(102, 126, 234, 0.5);
     }
 
-    /* ===== کلاس مخفی ===== */
     .hidden { display: none !important; }
 
-    /* ═══════════════════════════════════════════════════════ */
-    /* ✨ انیمیشن نرم برای جابه‌جایی بین بخش‌ها */
-    /* ═══════════════════════════════════════════════════════ */
     #mainButtons, #musicPlayer, #aboutSection {
       transition: opacity 0.45s ease, max-height 0.5s ease, margin 0.45s ease, transform 0.45s ease;
       max-height: 3000px;
@@ -994,7 +989,7 @@
     }
     updateVolumeIcon();
 
-    /* ========== ۶. بخش درباره من (با انیمیشن نرم) ========== */
+    /* ========== ۶. بخش درباره من (با اسکرول نرم) ========== */
     const aboutBtn = document.getElementById("aboutBtn");
     const aboutSection = document.getElementById("aboutSection");
     const aboutText = document.getElementById("aboutText");
@@ -1032,21 +1027,31 @@
 
 خيلى زود هم وارد دنياى souls like مى شيم:) و...`;
 
+    // 👇 اینجا فقط اسکرول نرم اضافه شد
     function showAboutTextLineByLine(text, element) {
       element.innerHTML = "";
       const lines = text.split("\n").filter((line) => line.trim() !== "");
+
       lines.forEach((line, index) => {
         const p = document.createElement("p");
         p.textContent = line.trim();
         element.appendChild(p);
+
         setTimeout(() => {
           p.style.opacity = "1";
           p.style.transform = "translateY(0)";
+
+          // ✨ اسکرول نرم به آخرین خط اضافه‌شده
+          setTimeout(() => {
+            p.scrollIntoView({
+              behavior: "smooth",
+              block: "end"
+            });
+          }, 80);
         }, index * 250);
       });
     }
 
-    // 👇 توابع جدید برای انیمیشن نرم
     function smoothHide(el) {
       el.classList.add('collapsing');
       setTimeout(() => {
@@ -1058,7 +1063,7 @@
     function smoothShow(el) {
       el.classList.add('collapsing');
       el.classList.remove('hidden');
-      void el.offsetWidth; // force reflow
+      void el.offsetWidth;
       requestAnimationFrame(() => {
         el.classList.remove('collapsing');
       });
