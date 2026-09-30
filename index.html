@@ -380,16 +380,11 @@
       border-radius: 2px;
     }
 
+    /* 👇 استایل بخش درباره من (بدون انیمیشن قبلی - با ترنزیشن جایگزین شد) */
     #aboutSection {
       display: flex;
       flex-direction: column;
       gap: 15px;
-      animation: fadeIn 0.4s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
     }
 
     .about-text {
@@ -613,7 +608,30 @@
       box-shadow: 0 2px 6px rgba(102, 126, 234, 0.5);
     }
 
+    /* ===== کلاس مخفی ===== */
     .hidden { display: none !important; }
+
+    /* ═══════════════════════════════════════════════════════ */
+    /* ✨ انیمیشن نرم برای جابه‌جایی بین بخش‌ها */
+    /* ═══════════════════════════════════════════════════════ */
+    #mainButtons, #musicPlayer, #aboutSection {
+      transition: opacity 0.45s ease, max-height 0.5s ease, margin 0.45s ease, transform 0.45s ease;
+      max-height: 3000px;
+      overflow: hidden;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #mainButtons.collapsing,
+    #musicPlayer.collapsing,
+    #aboutSection.collapsing {
+      opacity: 0 !important;
+      max-height: 0 !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      transform: translateY(20px) !important;
+      pointer-events: none !important;
+    }
 
     .footer {
       margin-top: 15px;
@@ -791,9 +809,7 @@
         const serverTime = new Date(data.datetime);
         timeOffset = serverTime.getTime() - Date.now();
         isTimeSynced = true;
-        console.log('✅ ساعت با سرور همگام شد.');
       } catch (error) {
-        console.warn('⚠️ عدم دسترسی به API زمان، استفاده از ساعت دستگاه.');
         isTimeSynced = false;
       }
     }
@@ -819,14 +835,9 @@
       dateEl.textContent = dayName + " " + jalaliDate;
     }
 
-    // 👇 اینجا تغییر کرد: اول ساعت فوراً با ساعت سیستم شروع میشه
     updateClock();
     setInterval(updateClock, 1000);
-
-    // بعد در پس‌زمینه با سرور همگام میشه
     syncTimeWithOnlineAPI();
-
-    // هر ۵ دقیقه یک بار دوباره همگام‌سازی
     setInterval(syncTimeWithOnlineAPI, 5 * 60 * 1000);
 
     /* ========== ۳. افکت تایپ ========== */
@@ -983,7 +994,7 @@
     }
     updateVolumeIcon();
 
-    /* ========== ۶. بخش درباره من ========== */
+    /* ========== ۶. بخش درباره من (با انیمیشن نرم) ========== */
     const aboutBtn = document.getElementById("aboutBtn");
     const aboutSection = document.getElementById("aboutSection");
     const aboutText = document.getElementById("aboutText");
@@ -1035,18 +1046,36 @@
       });
     }
 
+    // 👇 توابع جدید برای انیمیشن نرم
+    function smoothHide(el) {
+      el.classList.add('collapsing');
+      setTimeout(() => {
+        el.classList.add('hidden');
+        el.classList.remove('collapsing');
+      }, 500);
+    }
+
+    function smoothShow(el) {
+      el.classList.add('collapsing');
+      el.classList.remove('hidden');
+      void el.offsetWidth; // force reflow
+      requestAnimationFrame(() => {
+        el.classList.remove('collapsing');
+      });
+    }
+
     aboutBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      mainButtons.classList.add("hidden");
-      musicPlayer.classList.add("hidden");
-      aboutSection.classList.remove("hidden");
+      smoothHide(mainButtons);
+      smoothHide(musicPlayer);
+      smoothShow(aboutSection);
       showAboutTextLineByLine(aboutContent, aboutText);
     });
 
     backBtn.addEventListener("click", () => {
-      aboutSection.classList.add("hidden");
-      mainButtons.classList.remove("hidden");
-      musicPlayer.classList.remove("hidden");
+      smoothHide(aboutSection);
+      smoothShow(mainButtons);
+      smoothShow(musicPlayer);
     });
 
     /* ========== ۷. ذرات پس‌زمینه ========== */
