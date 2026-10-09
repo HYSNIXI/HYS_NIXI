@@ -139,9 +139,11 @@
       -webkit-user-select: none;
     }
 
-    .theme-btn:hover {
-      transform: rotate(25deg) scale(1.1);
-      background: rgba(102, 126, 234, 0.3);
+    @media (hover: hover) and (pointer: fine) {
+      .theme-btn:hover {
+        transform: rotate(25deg) scale(1.1);
+        background: rgba(102, 126, 234, 0.3);
+      }
     }
 
     .clock-box {
@@ -352,12 +354,31 @@
 
     @keyframes btnIn { to { opacity: 1; transform: translateY(0); } }
 
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 22px rgba(102, 126, 234, 0.5);
+    /* ============================================================
+       Hover / active states
+       ------------------------------------------------------------
+       Hover lift is applied ONLY on devices with a real pointer
+       (desktop mouse). On touchscreens the pseudo-hover state stays
+       stuck after a tap, causing the button to remain lifted and
+       collide with the one above it — especially after returning
+       from an external tab. This block fixes that.
+       ============================================================ */
+    @media (hover: hover) and (pointer: fine) {
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 22px rgba(102, 126, 234, 0.5);
+      }
+      .btn:hover .btn-icon {
+        transform: scale(1.1) rotate(-10deg);
+      }
     }
 
+    /* Tap feedback works on every device and releases automatically */
     .btn:active { transform: translateY(0) scale(0.97); }
+
+    /* Kill the default focus ring on tap, but keep it for keyboard nav */
+    .btn:focus { outline: none; }
+    .btn:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.6); outline-offset: 2px; }
 
     .btn::before {
       content: "";
@@ -421,8 +442,6 @@
 
     .icon-about { background-color: var(--primary); }
 
-    .btn:hover .btn-icon { transform: scale(1.1) rotate(-10deg); }
-
     .divider {
       height: 1px;
       background: var(--border);
@@ -474,10 +493,12 @@
       border: 1px solid var(--border);
     }
 
-    .back-btn:hover {
-      background: var(--primary);
-      color: #fff;
-      transform: translateY(-2px);
+    @media (hover: hover) and (pointer: fine) {
+      .back-btn:hover {
+        background: var(--primary);
+        color: #fff;
+        transform: translateY(-2px);
+      }
     }
 
     .music-player {
@@ -519,7 +540,9 @@
       -webkit-user-select: none;
     }
 
-    .play-btn:hover { transform: scale(1.08); }
+    @media (hover: hover) and (pointer: fine) {
+      .play-btn:hover { transform: scale(1.08); }
+    }
     .play-btn:active { transform: scale(0.95); }
 
     .play-btn::before {
@@ -644,7 +667,9 @@
       -webkit-user-select: none;
     }
 
-    .volume-btn:hover { transform: scale(1.15); }
+    @media (hover: hover) and (pointer: fine) {
+      .volume-btn:hover { transform: scale(1.15); }
+    }
 
     .volume-slider {
       -webkit-appearance: none;
@@ -671,7 +696,9 @@
       transition: transform 0.2s;
     }
 
-    .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    @media (hover: hover) and (pointer: fine) {
+      .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    }
 
     .volume-slider::-moz-range-thumb {
       width: 12px;
@@ -803,7 +830,7 @@
     }
 
     /* ============================================================
-       SHORT SCREEN (desktop with small height) — unchanged
+       SHORT SCREEN (desktop with small height)
        ============================================================ */
     @media (max-height: 700px) and (min-width: 501px) {
       body { padding: 10px; align-items: flex-start; }
@@ -829,13 +856,8 @@
 
     /* ============================================================
        MOBILE — Fully fluid layout using clamp() + dvh
-       ------------------------------------------------------------
-       Every vertical size is derived from the viewport height so
-       the whole card automatically fits on ANY phone portrait.
-       No fixed breakpoints for specific devices — it just works.
        ============================================================ */
     @media (max-width: 500px) {
-      /* --- Body --- */
       body {
         padding: max(6px, 1.2dvh) max(8px, 1.6dvh);
         padding-left: max(8px, 1.6dvh, env(safe-area-inset-left));
@@ -845,14 +867,12 @@
         align-items: center;
       }
 
-      /* --- Card --- */
       .card {
         padding: clamp(12px, 2.2dvh, 24px) clamp(14px, 3.5vw, 22px) clamp(10px, 1.8dvh, 18px);
         border-radius: clamp(14px, 2.6dvh, 22px);
         max-width: min(360px, 92vw);
       }
 
-      /* --- Theme button --- */
       .theme-btn {
         width: clamp(28px, 4.4dvh, 38px);
         height: clamp(28px, 4.4dvh, 38px);
@@ -861,7 +881,6 @@
         left: clamp(9px, 1.8dvh, 15px);
       }
 
-      /* --- Clock --- */
       .clock-box {
         top: clamp(9px, 1.8dvh, 15px);
         right: clamp(9px, 1.8dvh, 15px);
@@ -872,20 +891,17 @@
       .clock-time { font-size: clamp(10.5px, 1.7dvh, 14px); }
       .clock-date { font-size: clamp(9.5px, 1.5dvh, 12px); margin-top: clamp(2px, 0.4dvh, 3px); }
 
-      /* --- Avatar --- */
       .avatar {
         width: clamp(62px, 11dvh, 110px);
         height: clamp(62px, 11dvh, 110px);
         margin: clamp(28px, 4.5dvh, 40px) auto clamp(8px, 1.4dvh, 15px);
       }
 
-      /* --- Title --- */
       .card h2 {
         font-size: clamp(18px, 2.9dvh, 26px);
         margin-bottom: clamp(3px, 0.6dvh, 8px);
       }
 
-      /* --- Typing text --- */
       #typingText {
         font-size: clamp(11px, 1.7dvh, 14px);
         margin-bottom: clamp(9px, 1.6dvh, 18px);
@@ -893,7 +909,6 @@
         line-height: 1.45;
       }
 
-      /* --- Music player --- */
       .music-player {
         padding: clamp(6px, 1.1dvh, 10px) clamp(8px, 1.5dvh, 12px);
         margin-bottom: clamp(9px, 1.6dvh, 16px);
@@ -917,7 +932,6 @@
       .volume-slider::-webkit-slider-thumb { width: clamp(10px, 1.6dvh, 12px); height: clamp(10px, 1.6dvh, 12px); }
       .volume-slider::-moz-range-thumb { width: clamp(10px, 1.6dvh, 12px); height: clamp(10px, 1.6dvh, 12px); }
 
-      /* --- Buttons --- */
       .buttons {
         gap: clamp(5px, 0.95dvh, 11px);
         margin-bottom: clamp(6px, 1.2dvh, 14px);
@@ -942,17 +956,14 @@
 
       .icon-sibmo { font-size: clamp(12.5px, 2.2dvh, 18px) !important; }
 
-      /* --- Divider --- */
       .divider { margin: clamp(6px, 1.1dvh, 14px) 0; }
 
-      /* --- Footer --- */
       .footer {
         font-size: clamp(9.5px, 1.5dvh, 12px);
         margin-top: clamp(5px, 1dvh, 12px);
         opacity: 0.65;
       }
 
-      /* --- About section (if opened) --- */
       .back-btn {
         padding: clamp(6px, 1.1dvh, 10px) clamp(12px, 2.2dvh, 16px);
         font-size: clamp(11.5px, 1.7dvh, 14px);
@@ -964,7 +975,6 @@
         min-height: clamp(90px, 18dvh, 150px);
       }
 
-      /* --- Confetti --- */
       .confetti {
         width: clamp(6px, 1.1dvh, 10px);
         height: clamp(6px, 1.1dvh, 10px);
