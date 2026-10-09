@@ -803,9 +803,9 @@
     }
 
     /* ============================================================
-       SHORT SCREEN (desktop with small height)
+       SHORT SCREEN (desktop with small height) — unchanged
        ============================================================ */
-    @media (max-height: 700px) {
+    @media (max-height: 700px) and (min-width: 501px) {
       body { padding: 10px; align-items: flex-start; }
       .card { margin-top: 10px; padding: 20px 18px 18px; }
       .avatar { width: 80px; height: 80px; margin: 15px auto 10px; }
@@ -818,7 +818,7 @@
       #visualizer { height: 18px; }
     }
 
-    @media (max-height: 600px) {
+    @media (max-height: 600px) and (min-width: 501px) {
       .avatar { width: 60px; height: 60px; margin: 10px auto 6px; }
       .card { padding: 15px 15px 12px; }
       .card h2 { font-size: 18px; }
@@ -828,266 +828,147 @@
     }
 
     /* ============================================================
-       MOBILE — Phone portrait
+       MOBILE — Fully fluid layout using clamp() + dvh
        ------------------------------------------------------------
-       Layout: everything sized for a 360px-wide phone. Height
-       tiers compress only when the actual viewport is short.
+       Every vertical size is derived from the viewport height so
+       the whole card automatically fits on ANY phone portrait.
+       No fixed breakpoints for specific devices — it just works.
        ============================================================ */
-
-    /* Tier 1 — All phones: big, roomy layout */
     @media (max-width: 500px) {
+      /* --- Body --- */
       body {
-        padding: 12px;
-        padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+        padding: max(6px, 1.2dvh) max(8px, 1.6dvh);
+        padding-left: max(8px, 1.6dvh, env(safe-area-inset-left));
+        padding-right: max(8px, 1.6dvh, env(safe-area-inset-right));
+        padding-top: max(6px, 1.2dvh, env(safe-area-inset-top));
+        padding-bottom: max(6px, 1.2dvh, env(safe-area-inset-bottom));
         align-items: center;
       }
 
+      /* --- Card --- */
       .card {
-        padding: 20px 18px 16px;
-        border-radius: 20px;
-        max-width: 360px;
-        margin-top: 0;
+        padding: clamp(12px, 2.2dvh, 24px) clamp(14px, 3.5vw, 22px) clamp(10px, 1.8dvh, 18px);
+        border-radius: clamp(14px, 2.6dvh, 22px);
+        max-width: min(360px, 92vw);
       }
 
+      /* --- Theme button --- */
       .theme-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 15px;
-        top: 12px;
-        left: 12px;
+        width: clamp(28px, 4.4dvh, 38px);
+        height: clamp(28px, 4.4dvh, 38px);
+        font-size: clamp(12px, 2dvh, 17px);
+        top: clamp(9px, 1.8dvh, 15px);
+        left: clamp(9px, 1.8dvh, 15px);
       }
 
+      /* --- Clock --- */
       .clock-box {
-        top: 12px;
-        right: 12px;
-        padding: 5px 10px;
-        border-radius: 12px;
+        top: clamp(9px, 1.8dvh, 15px);
+        right: clamp(9px, 1.8dvh, 15px);
+        padding: clamp(4px, 0.8dvh, 6px) clamp(8px, 1.6dvh, 12px);
+        border-radius: clamp(10px, 1.8dvh, 14px);
       }
 
-      .clock-time { font-size: 12.5px; }
-      .clock-date { font-size: 11px; margin-top: 2px; }
+      .clock-time { font-size: clamp(10.5px, 1.7dvh, 14px); }
+      .clock-date { font-size: clamp(9.5px, 1.5dvh, 12px); margin-top: clamp(2px, 0.4dvh, 3px); }
 
+      /* --- Avatar --- */
       .avatar {
-        width: 90px;
-        height: 90px;
-        margin: 32px auto 12px;
+        width: clamp(62px, 11dvh, 110px);
+        height: clamp(62px, 11dvh, 110px);
+        margin: clamp(28px, 4.5dvh, 40px) auto clamp(8px, 1.4dvh, 15px);
       }
 
+      /* --- Title --- */
       .card h2 {
-        font-size: 22px;
-        margin-bottom: 5px;
+        font-size: clamp(18px, 2.9dvh, 26px);
+        margin-bottom: clamp(3px, 0.6dvh, 8px);
       }
 
+      /* --- Typing text --- */
       #typingText {
-        font-size: 13px;
-        margin-bottom: 16px;
-        min-height: 18px;
-        line-height: 1.5;
+        font-size: clamp(11px, 1.7dvh, 14px);
+        margin-bottom: clamp(9px, 1.6dvh, 18px);
+        min-height: clamp(15px, 2.2dvh, 20px);
+        line-height: 1.45;
       }
 
+      /* --- Music player --- */
       .music-player {
-        padding: 8px 10px;
-        margin-bottom: 14px;
-        gap: 9px;
-        border-radius: 14px;
+        padding: clamp(6px, 1.1dvh, 10px) clamp(8px, 1.5dvh, 12px);
+        margin-bottom: clamp(9px, 1.6dvh, 16px);
+        gap: clamp(6px, 1.1dvh, 10px);
+        border-radius: clamp(11px, 1.9dvh, 16px);
       }
 
       .play-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 14px;
+        width: clamp(30px, 5.2dvh, 44px);
+        height: clamp(30px, 5.2dvh, 44px);
+        font-size: clamp(11px, 1.9dvh, 16px);
       }
 
-      .player-title { font-size: 11.5px; gap: 5px; }
-      #visualizer { height: 18px; }
-      .progress-bar { height: 11px; }
-      .progress-bar .progress-track { height: 4.5px; }
-      .player-time { font-size: 9.5px; }
-      .volume-btn { font-size: 14px; padding: 3px; }
-      .volume-slider { width: 44px; height: 4px; }
-      .volume-slider::-webkit-slider-thumb { width: 12px; height: 12px; }
-      .volume-slider::-moz-range-thumb { width: 12px; height: 12px; }
+      .player-title { font-size: clamp(10.5px, 1.6dvh, 13px); gap: clamp(4px, 0.8dvh, 6px); }
+      #visualizer { height: clamp(12px, 2.1dvh, 20px); }
+      .progress-bar { height: clamp(9px, 1.5dvh, 12px); }
+      .progress-bar .progress-track { height: clamp(4px, 0.7dvh, 5px); }
+      .player-time { font-size: clamp(8.5px, 1.4dvh, 10.5px); }
+      .volume-btn { font-size: clamp(12px, 1.9dvh, 15px); padding: clamp(2px, 0.5dvh, 4px); }
+      .volume-slider { width: clamp(32px, 5.5dvh, 50px); height: clamp(3px, 0.6dvh, 4px); }
+      .volume-slider::-webkit-slider-thumb { width: clamp(10px, 1.6dvh, 12px); height: clamp(10px, 1.6dvh, 12px); }
+      .volume-slider::-moz-range-thumb { width: clamp(10px, 1.6dvh, 12px); height: clamp(10px, 1.6dvh, 12px); }
 
+      /* --- Buttons --- */
       .buttons {
-        gap: 9px;
-        margin-bottom: 14px;
+        gap: clamp(5px, 0.95dvh, 11px);
+        margin-bottom: clamp(6px, 1.2dvh, 14px);
       }
 
       .btn {
-        padding: 11px 16px;
-        font-size: 14px;
-        gap: 7px;
-        border-radius: 22px;
+        padding: clamp(7px, 1.35dvh, 13px) clamp(11px, 2.2dvh, 18px);
+        font-size: clamp(11.5px, 1.75dvh, 15px);
+        gap: clamp(5px, 0.95dvh, 8px);
+        border-radius: clamp(16px, 2.8dvh, 25px);
       }
 
       .btn .btn-icon {
-        width: 22px;
-        height: 22px;
+        width: clamp(17px, 2.9dvh, 24px);
+        height: clamp(17px, 2.9dvh, 24px);
       }
 
       .btn .btn-icon svg {
-        width: 13px;
-        height: 13px;
+        width: clamp(10px, 1.7dvh, 14px);
+        height: clamp(10px, 1.7dvh, 14px);
       }
 
-      .icon-sibmo { font-size: 16px !important; }
+      .icon-sibmo { font-size: clamp(12.5px, 2.2dvh, 18px) !important; }
 
-      .divider { margin: 12px 0; }
+      /* --- Divider --- */
+      .divider { margin: clamp(6px, 1.1dvh, 14px) 0; }
 
+      /* --- Footer --- */
       .footer {
-        font-size: 11px;
-        margin-top: 10px;
+        font-size: clamp(9.5px, 1.5dvh, 12px);
+        margin-top: clamp(5px, 1dvh, 12px);
         opacity: 0.65;
       }
 
+      /* --- About section (if opened) --- */
       .back-btn {
-        padding: 8px 14px;
-        font-size: 12.5px;
+        padding: clamp(6px, 1.1dvh, 10px) clamp(12px, 2.2dvh, 16px);
+        font-size: clamp(11.5px, 1.7dvh, 14px);
       }
 
       .about-text {
-        font-size: 14.5px;
-        line-height: 2.1;
-        min-height: 120px;
-      }
-    }
-
-    /* Tier 2 — Modern phones (S24 FE, A56, S22/S23) */
-    @media (max-width: 500px) and (max-height: 780px) {
-      body { padding: 10px; }
-
-      .card {
-        padding: 16px 15px 12px;
-        border-radius: 18px;
+        font-size: clamp(12.5px, 1.9dvh, 16px);
+        line-height: 2;
+        min-height: clamp(90px, 18dvh, 150px);
       }
 
-      .theme-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 14px;
-        top: 10px;
-        left: 10px;
+      /* --- Confetti --- */
+      .confetti {
+        width: clamp(6px, 1.1dvh, 10px);
+        height: clamp(6px, 1.1dvh, 10px);
       }
-
-      .clock-box {
-        top: 10px;
-        right: 10px;
-        padding: 4px 9px;
-      }
-
-      .clock-time { font-size: 11.5px; }
-      .clock-date { font-size: 10px; }
-
-      .avatar {
-        width: 78px;
-        height: 78px;
-        margin: 30px auto 10px;
-      }
-
-      .card h2 { font-size: 20px; margin-bottom: 4px; }
-
-      #typingText {
-        font-size: 12px;
-        margin-bottom: 13px;
-        min-height: 16px;
-      }
-
-      .music-player {
-        padding: 7px 9px;
-        margin-bottom: 12px;
-        gap: 8px;
-      }
-
-      .play-btn { width: 36px; height: 36px; font-size: 13px; }
-      #visualizer { height: 16px; }
-      .player-title { font-size: 11px; }
-      .player-time { font-size: 9px; }
-      .volume-slider { width: 40px; }
-
-      .buttons { gap: 7px; margin-bottom: 12px; }
-
-      .btn {
-        padding: 10px 14px;
-        font-size: 13px;
-        gap: 6px;
-        border-radius: 20px;
-      }
-
-      .btn .btn-icon { width: 20px; height: 20px; }
-      .btn .btn-icon svg { width: 12px; height: 12px; }
-      .icon-sibmo { font-size: 15px !important; }
-
-      .divider { margin: 10px 0; }
-      .footer { font-size: 10.5px; margin-top: 8px; }
-    }
-
-    /* Tier 3 — Very short phones (small / old phones) */
-    @media (max-width: 500px) and (max-height: 680px) {
-      body { padding: 8px; }
-
-      .card {
-        padding: 13px 12px 10px;
-        border-radius: 16px;
-      }
-
-      .theme-btn {
-        width: 27px;
-        height: 27px;
-        font-size: 13px;
-        top: 8px;
-        left: 8px;
-      }
-
-      .clock-box {
-        top: 8px;
-        right: 8px;
-        padding: 3px 7px;
-      }
-
-      .clock-time { font-size: 10.5px; }
-      .clock-date { font-size: 9.5px; }
-
-      .avatar {
-        width: 66px;
-        height: 66px;
-        margin: 26px auto 8px;
-      }
-
-      .card h2 { font-size: 17px; margin-bottom: 3px; }
-
-      #typingText {
-        font-size: 11px;
-        margin-bottom: 10px;
-        min-height: 14px;
-      }
-
-      .music-player {
-        padding: 6px 8px;
-        margin-bottom: 10px;
-        gap: 7px;
-      }
-
-      .play-btn { width: 32px; height: 32px; font-size: 12px; }
-      #visualizer { height: 13px; }
-      .player-title { font-size: 10.5px; }
-      .player-time { font-size: 8.5px; }
-      .volume-slider { width: 34px; }
-
-      .buttons { gap: 6px; margin-bottom: 10px; }
-
-      .btn {
-        padding: 8px 13px;
-        font-size: 12px;
-        gap: 5px;
-        border-radius: 18px;
-      }
-
-      .btn .btn-icon { width: 18px; height: 18px; }
-      .btn .btn-icon svg { width: 11px; height: 11px; }
-      .icon-sibmo { font-size: 13px !important; }
-
-      .divider { margin: 8px 0; }
-      .footer { font-size: 10px; margin-top: 6px; }
     }
 
     @media (max-width: 768px) { body { animation-duration: 25s; } }
