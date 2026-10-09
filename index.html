@@ -33,11 +33,7 @@
       --player-bg: rgba(102, 126, 234, 0.15);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html {
       -webkit-text-size-adjust: 100%;
@@ -265,9 +261,7 @@
       animation: shine 3s linear infinite;
     }
 
-    @keyframes shine {
-      to { background-position: 200% center; }
-    }
+    @keyframes shine { to { background-position: 200% center; } }
 
     #typingText {
       color: var(--muted);
@@ -336,7 +330,6 @@
     .btn:nth-child(7) { animation-delay: 0.9s; --shine-delay: 5.4s; }
     .btn:nth-child(9) { animation-delay: 1.0s; --shine-delay: 6.3s; }
 
-    /* State applied after the entrance animation is done */
     .btn.entered,
     .music-player.entered {
       animation: none;
@@ -344,20 +337,15 @@
       transform: translateY(0);
     }
 
-    @keyframes btnIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes btnIn { to { opacity: 1; transform: translateY(0); } }
 
     .btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 10px 22px rgba(102, 126, 234, 0.5);
     }
 
-    .btn:active {
-      transform: translateY(0) scale(0.97);
-    }
+    .btn:active { transform: translateY(0) scale(0.97); }
 
-    /* Soft colored wave passing under the text */
     .btn::before {
       content: "";
       position: absolute;
@@ -384,11 +372,7 @@
       100% { transform: translateX(0%); }
     }
 
-    /* Keep text and icon above the wave */
-    .btn>* {
-      position: relative;
-      z-index: 1;
-    }
+    .btn>* { position: relative; z-index: 1; }
 
     .btn .btn-icon {
       display: flex;
@@ -403,11 +387,7 @@
       overflow: hidden;
     }
 
-    .btn .btn-icon svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-    }
+    .btn .btn-icon svg { width: 14px; height: 14px; fill: currentColor; }
 
     .icon-aparat { background-color: #ED145B; }
     .icon-kick { background-color: #53FC18; }
@@ -428,9 +408,7 @@
 
     .icon-about { background-color: var(--primary); }
 
-    .btn:hover .btn-icon {
-      transform: scale(1.1) rotate(-10deg);
-    }
+    .btn:hover .btn-icon { transform: scale(1.1) rotate(-10deg); }
 
     .divider {
       height: 1px;
@@ -549,9 +527,7 @@
       animation: spin 1.2s linear infinite;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .player-info {
       flex: 1;
@@ -572,10 +548,7 @@
       text-overflow: ellipsis;
     }
 
-    .player-title .note {
-      display: inline-block;
-      transition: transform 0.3s;
-    }
+    .player-title .note { display: inline-block; transition: transform 0.3s; }
 
     .music-player.playing .player-title .note {
       animation: bounce 0.6s ease-in-out infinite alternate;
@@ -852,9 +825,7 @@
       #visualizer { height: 16px; }
     }
 
-    @media (max-width: 768px) {
-      body { animation-duration: 25s; }
-    }
+    @media (max-width: 768px) { body { animation-duration: 25s; } }
 
     @media (prefers-reduced-motion: reduce) {
       * {
@@ -1003,7 +974,7 @@
 
   <script>
     /* ==========================================================================
-       FIX: Disable entrance CSS animations after initial page load
+       Disable entrance CSS animations after initial page load
        ========================================================================== */
     setTimeout(() => {
       document.querySelectorAll('.btn').forEach(btn => {
@@ -1035,6 +1006,15 @@
 
     /* ==========================================================================
        UNIFIED PERFORMANCE MANAGER + CLOCK WATCHDOG
+       --------------------------------------------------------------------------
+       FIXES over previous version:
+         1. Warmup period: no degradation during the first 8 seconds after load.
+         2. Change cooldown: 15s between any degrade/recover action (anti ping-pong).
+         3. Stricter thresholds: low = 40% of target for 5 consecutive samples.
+         4. Easier recovery: good = 80% of target for 20 consecutive samples.
+         5. markHeavyActivity() API lets code pause FPS-based degradation
+            while expensive operations (e.g. confetti) are running.
+         6. Detailed console logging with the reason for every change.
        ========================================================================== */
     const PM = (function initPerformanceManager() {
       const ua = navigator.userAgent;
@@ -1078,6 +1058,11 @@
         maxDegradation: 2,
         startTime: Date.now(),
         errorCount: 0,
+        /* NEW: prevents degradation during page-load / heavy UI moments */
+        warmupUntil: Date.now() + 8000,
+        /* NEW: min. time between any degrade/recover change (anti ping-pong) */
+        lastChangeAt: 0,
+        changeCooldownMs: 15000,
         clock: {
           lastTick: Date.now(),
           syncStatus: 'initial',
@@ -1113,24 +1098,48 @@
           frameCount = 0;
           lastSampleTime = now;
 
-          if (fps < state.targetFPS * 0.5) {
+          /* Skip FPS-based decisions during warmup */
+          if (Date.now() < state.warmupUntil) {
+            consecutiveLowFPS = 0;
+            consecutiveGoodFPS = 0;
+            requestAnimationFrame(fpsTick);
+            return;
+          }
+
+          /* Skip while in cooldown after a recent change */
+          if (Date.now() - state.lastChangeAt < state.changeCooldownMs) {
+            consecutiveLowFPS = 0;
+            consecutiveGoodFPS = 0;
+            requestAnimationFrame(fpsTick);
+            return;
+          }
+
+          const lowThreshold = state.targetFPS * 0.4;   // was 0.5
+          const goodThreshold = state.targetFPS * 0.8;  // was 0.85
+
+          if (fps < lowThreshold) {
             consecutiveLowFPS++;
             consecutiveGoodFPS = 0;
-            if (consecutiveLowFPS >= 3 && state.degradationLevel < state.maxDegradation) {
+            if (consecutiveLowFPS >= 5 && state.degradationLevel < state.maxDegradation) {
+              // was 3 consecutive samples
+              console.warn(`⚠️ PM: FPS=${fps} < ${lowThreshold.toFixed(0)} for 5s → degrading`);
               degrade();
+              state.lastChangeAt = Date.now();
               consecutiveLowFPS = 0;
+            }
+          } else if (fps >= goodThreshold) {
+            consecutiveGoodFPS++;
+            consecutiveLowFPS = 0;
+            if (consecutiveGoodFPS >= 20 && state.degradationLevel > 0) {
+              // was 30 consecutive samples
+              console.log(`✅ PM: FPS=${fps} stable for 20s → recovering`);
+              recover();
+              state.lastChangeAt = Date.now();
+              consecutiveGoodFPS = 0;
             }
           } else {
             consecutiveLowFPS = 0;
-            if (fps >= state.targetFPS * 0.85) {
-              consecutiveGoodFPS++;
-              if (consecutiveGoodFPS >= 30 && state.degradationLevel > 0) {
-                recover();
-                consecutiveGoodFPS = 0;
-              }
-            } else {
-              consecutiveGoodFPS = 0;
-            }
+            consecutiveGoodFPS = 0;
           }
         }
         requestAnimationFrame(fpsTick);
@@ -1186,6 +1195,13 @@
         }
 
         window.dispatchEvent(new Event('pm:rebuild-particles'));
+      }
+
+      /* NEW: call this before heavy work to suppress FPS-based degradation */
+      function markHeavyActivity(durationMs) {
+        const d = durationMs || 1500;
+        const until = Date.now() + d;
+        if (until > state.warmupUntil) state.warmupUntil = until;
       }
 
       function clockTick() {
@@ -1258,6 +1274,14 @@
         clockTick,
         clockSyncSuccess,
         clockSyncFailure,
+        markHeavyActivity,
+        resetDegradation: () => {
+          state.degradationLevel = 0;
+          state.warmupUntil = Date.now() + 5000;
+          state.lastChangeAt = 0;
+          recover(); /* ensure visuals are back */
+          console.log('♻️ PM: Degradation manually reset');
+        },
         getReport: () => ({
           tier: state.tier,
           isMobile: state.isMobile,
@@ -1265,6 +1289,8 @@
           particles: state.particleCount,
           uptime: Math.round((Date.now() - state.startTime) / 1000),
           errors: state.errorCount,
+          warmupRemainingMs: Math.max(0, state.warmupUntil - Date.now()),
+          cooldownRemainingMs: Math.max(0, state.changeCooldownMs - (Date.now() - state.lastChangeAt)),
           clock: {
             status: state.clock.syncStatus,
             source: state.clock.source,
@@ -1276,6 +1302,10 @@
         })
       };
     })();
+
+    /* Convenience debug hooks (open the browser console and type PMReport() ) */
+    window.PMReport = () => console.log(PM.getReport());
+    window.PMReset = () => PM.resetDegradation();
 
     /* ========== 1. Theme Toggle ========== */
     const themeBtn = document.getElementById("themeBtn");
@@ -1415,45 +1445,74 @@
     }
     type();
 
-    /* ========== 4. Confetti ========== */
+    /* ========== 4. Confetti ==========
+       REWRITTEN: instead of spawning one setInterval per particle
+       (previously up to 35 concurrent timers at 16ms each), all
+       confetti particles are now updated by a single shared rAF loop.
+       This drops CPU spikes drastically and no longer trips the PM
+       degradation logic. markHeavyActivity() is called as well so
+       the FPS watchdog ignores the frame drop during the burst.
+       ============================================================ */
     const colors = ["#667eea", "#764ba2", "#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1"];
+    const activeConfetti = [];
+    let confettiRAF = null;
 
     function createConfetti(x, y) {
       const count = PM.state.confettiCount;
       for (let i = 0; i < count; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.background = colors[Math.floor(Math.random() * colors.length)];
-        c.style.left = x + "px";
-        c.style.top = y + "px";
-        c.style.transform = `translate3d(0,0,0) rotate(${Math.random() * 360}deg)`;
-        document.body.appendChild(c);
+        const el = document.createElement("div");
+        el.className = "confetti";
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.style.transform = `translate3d(0,0,0) rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(el);
 
         const angle = Math.random() * Math.PI * 2;
         const velocity = 4 + Math.random() * 6;
-        let posX = x, posY = y;
-        let velX = Math.cos(angle) * velocity;
-        let velY = Math.sin(angle) * velocity - 4;
-        let rotation = Math.random() * 360;
-        let life = 100;
-
-        const interval = setInterval(() => {
-          posX += velX;
-          posY += velY;
-          velY += 0.35;
-          velX *= 0.99;
-          rotation += 6;
-          life--;
-          c.style.left = posX + "px";
-          c.style.top = posY + "px";
-          c.style.transform = `rotate(${rotation}deg)`;
-          c.style.opacity = life / 100;
-          if (life <= 0 || posY > window.innerHeight) {
-            clearInterval(interval);
-            c.remove();
-          }
-        }, 16);
+        activeConfetti.push({
+          el,
+          posX: x,
+          posY: y,
+          velX: Math.cos(angle) * velocity,
+          velY: Math.sin(angle) * velocity - 4,
+          rotation: Math.random() * 360,
+          life: 100
+        });
       }
+
+      /* Tell PM this is a heavy UI moment — don't judge FPS right now */
+      PM.markHeavyActivity(1500);
+
+      if (!confettiRAF) confettiRAF = requestAnimationFrame(confettiTick);
+    }
+
+    function confettiTick() {
+      if (activeConfetti.length === 0) {
+        confettiRAF = null;
+        return;
+      }
+
+      for (let i = activeConfetti.length - 1; i >= 0; i--) {
+        const c = activeConfetti[i];
+        c.posX += c.velX;
+        c.posY += c.velY;
+        c.velY += 0.35;
+        c.velX *= 0.99;
+        c.rotation += 6;
+        c.life--;
+
+        c.el.style.left = c.posX + "px";
+        c.el.style.top = c.posY + "px";
+        c.el.style.transform = `rotate(${c.rotation}deg)`;
+        c.el.style.opacity = c.life / 100;
+
+        if (c.life <= 0 || c.posY > window.innerHeight) {
+          c.el.remove();
+          activeConfetti.splice(i, 1);
+        }
+      }
+      confettiRAF = requestAnimationFrame(confettiTick);
     }
 
     document.querySelectorAll(".btn").forEach((btn) => {
@@ -1927,24 +1986,17 @@
       aboutRevealTimeouts = [];
     }
 
-    /* Transition lock to prevent double-click race conditions */
     let isTransitioning = false;
 
-    /* ============================================================
-       FIXED goToAbout
-       - Smooth fade-in for the About section (no hard pop-in)
-       - Removed scrollIntoView which conflicted with overflow:hidden
-       - Transition lock + animation cleanup
-       ============================================================ */
     async function goToAbout() {
       if (isTransitioning) return;
       isTransitioning = true;
 
       try {
+        PM.markHeavyActivity(1500);
         clearAboutRevealTimeouts();
         const oldHeight = mainCard.offsetHeight;
 
-        /* 1) Fade out main content */
         const out1 = mainButtons.animate(
           [{ opacity: 1 }, { opacity: 0 }],
           { duration: 220, easing: 'ease-out', fill: 'forwards' }
@@ -1957,7 +2009,6 @@
         out1.cancel();
         out2.cancel();
 
-        /* 2) Build about content */
         aboutText.innerHTML = "";
         const lines = aboutContent.split("\n").filter((line) => line.trim() !== "");
         const paragraphs = [];
@@ -1968,20 +2019,16 @@
           paragraphs.push(p);
         });
 
-        /* 3) Swap visibility */
         mainButtons.classList.add('hidden');
         musicPlayer.classList.add('hidden');
         aboutSection.classList.remove('hidden');
 
-        /* 4) Hide about section initially to prevent a hard pop-in */
         aboutSection.style.opacity = '0';
         aboutSection.style.transform = 'translateY(-8px)';
 
-        /* 5) Animate card height */
         const newHeight = mainCard.offsetHeight;
         await animateCardHeight(oldHeight, newHeight);
 
-        /* 6) Fade in about section smoothly */
         aboutSection.style.opacity = '';
         aboutSection.style.transform = '';
 
@@ -1993,7 +2040,6 @@
           { duration: 380, easing: SMOOTH_EASE, fill: 'both' }
         );
 
-        /* 7) Reveal paragraphs one by one (starts during fade-in) */
         paragraphs.forEach((p, index) => {
           const t = setTimeout(() => {
             p.classList.add('revealed');
@@ -2008,22 +2054,15 @@
       }
     }
 
-    /* ============================================================
-       FIXED goToMain (Back button)
-       - Inline opacity: 0 is set BEFORE items become visible
-       - Inline opacity is cleared at the exact same moment the
-         entrance animation starts (no flash of unstyled content)
-       - Items no longer appear before their animation runs
-       ============================================================ */
     async function goToMain() {
       if (isTransitioning) return;
       isTransitioning = true;
 
       try {
+        PM.markHeavyActivity(1500);
         clearAboutRevealTimeouts();
         const oldHeight = mainCard.offsetHeight;
 
-        /* 1) Fade out about section */
         const outAnim = aboutSection.animate(
           [{ opacity: 1 }, { opacity: 0 }],
           { duration: 180, easing: 'ease-out', fill: 'forwards' }
@@ -2031,13 +2070,11 @@
         await outAnim.finished;
         outAnim.cancel();
 
-        /* 2) Clear about content and reset inline styles */
         aboutText.innerHTML = "";
         aboutSection.classList.add('hidden');
         aboutSection.style.opacity = '';
         aboutSection.style.transform = '';
 
-        /* 3) Show main content (but keep invisible via inline opacity) */
         mainButtons.classList.remove('hidden');
         musicPlayer.classList.remove('hidden');
 
@@ -2046,15 +2083,11 @@
         musicPlayer.style.opacity = '0';
         items.forEach(el => { el.style.opacity = '0'; });
 
-        /* 4) Animate card height */
         const newHeight = mainCard.offsetHeight;
         await animateCardHeight(oldHeight, newHeight);
 
-        /* 5) Pick a random entrance animation */
         const pick = RETURN_ANIMATIONS[Math.floor(Math.random() * RETURN_ANIMATIONS.length)];
 
-        /* 6) Synchronously clear inline opacity + start animations
-              (both in the same microtask so no paint happens between them) */
         musicPlayer.style.opacity = '';
         items.forEach(el => { el.style.opacity = ''; });
 
@@ -2070,7 +2103,6 @@
           })
         );
 
-        /* 7) Cleanup after all animations finish */
         const allAnims = [mpAnim, ...itemAnims];
         Promise.all(allAnims.map(a => a.finished))
           .then(() => { allAnims.forEach(a => a.cancel()); })
@@ -2177,16 +2209,16 @@
     let lastFrameTime = 0;
 
     function animate(timestamp) {
+      requestAnimationFrame(animate);
+
       if (!timestamp) timestamp = performance.now();
-      if (timestamp - lastFrameTime < frameInterval) {
-        requestAnimationFrame(animate);
-        return;
-      }
+      /* Small epsilon (-1ms) to avoid dropping a frame on jittery timestamps */
+      if (timestamp - lastFrameTime < frameInterval - 1) return;
       lastFrameTime = timestamp;
+
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       particles.forEach((p) => { p.update(); p.draw(); });
       connectParticles();
-      requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
 
@@ -2194,11 +2226,11 @@
     setInterval(() => {
       const r = PM.getReport();
       const c = r.clock;
-      console.log(`Health | Tier: ${r.tier} | Particles: ${r.particles} | Degradation: ${r.degradation}/2 | Errors: ${r.errors} | Uptime: ${r.uptime}s`);
+      console.log(`Health | Tier: ${r.tier} | Particles: ${r.particles} | Degradation: ${r.degradation}/2 | Errors: ${r.errors} | Uptime: ${r.uptime}s | Warmup: ${r.warmupRemainingMs}ms | Cooldown: ${r.cooldownRemainingMs}ms`);
       console.log(`Clock | Status: ${c.status} | Source: ${c.source} | Last tick: ${c.lastTickAgo}s ago | Ticks: ${c.ticks} | Restarts: ${c.restarts} | Online: ${c.online}`);
     }, 60000);
 
-    console.log("HYS NIXI loaded successfully");
+    console.log("HYS NIXI loaded successfully — type PMReport() or PMReset() in console for debugging");
   </script>
 </body>
 
