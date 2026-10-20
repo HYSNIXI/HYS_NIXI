@@ -56,6 +56,7 @@
       text-size-adjust: 100%;
       scroll-behavior: smooth;
       overflow-y: scroll;
+      overflow-x: hidden;
     }
 
     body {
@@ -70,15 +71,12 @@
       background-size: 300% 300%;
       animation: gradientMove 15s ease infinite;
       transition: background 0.4s ease;
-      overflow-x: hidden;
       position: relative;
       -webkit-tap-highlight-color: transparent;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overscroll-behavior-y: none;
       touch-action: manipulation;
-      transform: translateZ(0);
-      overflow-anchor: none;
     }
 
     @keyframes gradientMove {
@@ -1605,11 +1603,11 @@
 
     @media (max-width: 500px) {
       body {
-        padding: max(6px, 1.2dvh) max(8px, 1.6dvh);
-        padding-left: max(8px, 1.6dvh, env(safe-area-inset-left));
-        padding-right: max(8px, 1.6dvh, env(safe-area-inset-right));
-        padding-top: max(6px, 1.2dvh, env(safe-area-inset-top));
-        padding-bottom: max(40px, 6dvh, env(safe-area-inset-bottom)); /* Fixed: Increased bottom padding */
+        padding: max(10px, 2dvh) max(10px, 2dvh);
+        padding-left: max(10px, 2dvh, env(safe-area-inset-left));
+        padding-right: max(10px, 2dvh, env(safe-area-inset-right));
+        padding-top: max(10px, 2dvh, env(safe-area-inset-top));
+        padding-bottom: max(80px, 10dvh, env(safe-area-inset-bottom));
         align-items: flex-start;
         animation: none;
         background: linear-gradient(135deg, #667eea, #764ba2);
@@ -1622,7 +1620,7 @@
         max-width: min(360px, 92vw);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        margin-bottom: 20px; /* Fixed: Added margin to lift the card */
+        margin-bottom: 30px;
       }
 
       .theme-switch {
@@ -1782,7 +1780,6 @@
       }
     }
 
-    /* 📱 Extra small screens: auto-fit for tiny phones */
     @media (max-width: 360px) {
       .card {
         max-width: calc(100vw - 12px);
@@ -1889,7 +1886,7 @@
     <div class="bday-glow"></div>
     <div class="bday-text">Happy Birthday</div>
     <div class="bday-name">NIXI</div>
-    <div class="bday-age">28</div>
+    <div class="bday-age">26</div>
   </div>
 
   <canvas id="particles"></canvas>
@@ -2614,7 +2611,6 @@
       const isTransitionBtn = btn.id === 'donateBtn' || btn.id === 'aboutBtn' ||
                               btn.id === 'backBtn' || btn.id === 'backFromDonateBtn';
       btn.addEventListener("click", (e) => {
-        // Skip confetti on transition buttons on mobile to prevent jank
         if (isTransitionBtn && window.innerWidth <= 500) return;
         createConfetti(e.clientX, e.clientY);
       });
@@ -3037,8 +3033,13 @@
 
     const SMOOTH_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
-    // 🚀 FIX: Detect mobile viewport for smoother transitions
     const isMobileView = () => window.innerWidth <= 500;
+
+    function forceScrollTop() {
+      window.scrollTo(0, 0);
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
 
     const RETURN_ANIMATIONS = [
       { name: 'Slide Up', kf: [{ opacity: 0, transform: 'translateY(30px)' }, { opacity: 1, transform: 'translateY(0)' }] },
@@ -3052,11 +3053,8 @@
       { name: 'Fade In', kf: [{ opacity: 0 }, { opacity: 1 }] }
     ];
 
-    // 🚀 FIX: On mobile, skip the height animation to prevent scroll jump.
-    // Fade + instant height swap feels smoother and eliminates scroll-clamp jank.
     function animateCardHeight(fromH, toH, duration) {
       if (isMobileView()) {
-        // Instant height change on mobile — no scroll clamp animation
         return Promise.resolve();
       }
 
@@ -3088,32 +3086,6 @@
 
     let isTransitioning = false;
 
-    // 🚀 FIX: Handle scroll before shrinking to prevent the page-jump on mobile.
-    // If the user scrolled down to reach the button, we smoothly scroll back to
-    // top during the fadeout, then force scroll to top before the card shrinks.
-    async function prepareForShrink() {
-      const wasScrolled = window.scrollY > 5;
-      if (wasScrolled) {
-        try {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (e) {
-          window.scrollTo(0, 0);
-        }
-      }
-      return wasScrolled;
-    }
-
-    function finishScrollReset(wasScrolled) {
-      // Ensure we're at top BEFORE the card shrinks
-      if (wasScrolled && window.scrollY > 0) {
-        try {
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        } catch (e) {
-          window.scrollTo(0, 0);
-        }
-      }
-    }
-
     async function goToAbout() {
       if (isTransitioning) return;
       isTransitioning = true;
@@ -3121,26 +3093,19 @@
       try {
         PM.markHeavyActivity(1500);
         clearAboutRevealTimeouts();
-
-        // 🚀 FIX: handle scroll jump
-        const wasScrolled = await prepareForShrink();
-        const fadeMs = wasScrolled ? 380 : 220;
+        forceScrollTop();
 
         const oldHeight = mainCard.offsetHeight;
 
         const out1 = mainButtons.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: fadeMs, easing: 'ease-out', fill: 'forwards' }
+          { duration: 220, easing: 'ease-out', fill: 'forwards' }
         );
         const out2 = musicPlayer.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: fadeMs, easing: 'ease-out', fill: 'forwards' }
+          { duration: 220, easing: 'ease-out', fill: 'forwards' }
         );
         await Promise.all([out1.finished, out2.finished]);
-
-        // Guarantee we're at top before shrink
-        finishScrollReset(wasScrolled);
-
         out1.cancel();
         out2.cancel();
 
@@ -3196,26 +3161,19 @@
       try {
         PM.markHeavyActivity(1500);
         clearAboutRevealTimeouts();
-
-        // 🚀 FIX: handle scroll jump (this was the "refresh" feeling)
-        const wasScrolled = await prepareForShrink();
-        const fadeMs = wasScrolled ? 380 : 220;
+        forceScrollTop();
 
         const oldHeight = mainCard.offsetHeight;
 
         const out1 = mainButtons.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: fadeMs, easing: 'ease-out', fill: 'forwards' }
+          { duration: 220, easing: 'ease-out', fill: 'forwards' }
         );
         const out2 = musicPlayer.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: fadeMs, easing: 'ease-out', fill: 'forwards' }
+          { duration: 220, easing: 'ease-out', fill: 'forwards' }
         );
         await Promise.all([out1.finished, out2.finished]);
-
-        // Guarantee we're at top before shrink
-        finishScrollReset(wasScrolled);
-
         out1.cancel();
         out2.cancel();
 
@@ -3259,6 +3217,8 @@
       try {
         PM.markHeavyActivity(1500);
         clearAboutRevealTimeouts();
+        forceScrollTop();
+
         const oldHeight = mainCard.offsetHeight;
 
         const activeSection = fromSection === 'donate' ? donateSection : aboutSection;
