@@ -8,18 +8,6 @@
   <meta name="theme-color" content="#667eea" />
   <title>HYS NIXI</title>
 
-  <!-- 🛡️ Security: Prevent Right Click & DevTools -->
-  <script>
-    document.addEventListener('contextmenu', event => event.preventDefault());
-
-    document.onkeydown = function (e) {
-      if (e.key === 'F12' || e.keyCode === 123) return false;
-      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) return false;
-      if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) return false;
-      if (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c' || e.key === 'U' || e.key === 'u')) return false;
-    };
-  </script>
-
   <style>
     :root {
       --primary: #667eea;
@@ -1524,7 +1512,7 @@
       }
     }
 
-    @media (max-height: 700px) and (min-width: 501px) {
+    @media (max-height: 850px) and (min-width: 501px) {
       body {
         padding-top: max(15px, calc((100vh - 680px) / 2));
       }
@@ -1607,7 +1595,7 @@
         padding-left: max(10px, 2dvh, env(safe-area-inset-left));
         padding-right: max(10px, 2dvh, env(safe-area-inset-right));
         padding-top: max(10px, 2dvh, env(safe-area-inset-top));
-        padding-bottom: max(80px, 10dvh, env(safe-area-inset-bottom));
+        padding-bottom: max(24px, 3dvh, env(safe-area-inset-bottom));
         align-items: flex-start;
         animation: none;
         background: linear-gradient(135deg, #667eea, #764ba2);
@@ -1620,7 +1608,7 @@
         max-width: min(360px, 92vw);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        margin-bottom: 30px;
+        margin-bottom: 12px;
       }
 
       .theme-switch {
@@ -1862,7 +1850,36 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      /* Keep animations running! */
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Mobile runtime optimizations: stable viewport, safe-area aware and no tap flash. */
+    @media (max-width: 768px) {
+      body {
+        min-height: 100svh;
+      }
+
+      #particles {
+        contain: strict;
+      }
+
+      .music-player,
+      .buttons,
+      #aboutSection,
+      #donateSection {
+        contain: layout style;
+      }
     }
   </style>
 </head>
@@ -1932,14 +1949,15 @@
     <p id="typingText"></p>
 
     <div class="music-player" id="musicPlayer">
-      <button class="play-btn" id="playBtn" aria-label="پخش / توقف">▶</button>
+      <button type="button" class="play-btn" id="playBtn" aria-label="پخش / توقف" aria-pressed="false">▶</button>
       <div class="player-info">
         <div class="player-title">
           <span class="note">🎵</span>
           <span><i>MOWZ ANANASI</i></span>
         </div>
         <canvas id="visualizer"></canvas>
-        <div class="progress-bar" id="progressBar">
+        <div class="progress-bar" id="progressBar" role="slider" tabindex="0" aria-label="موقعیت پخش موزیک"
+          aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00 / 0:00">
           <div class="progress-track">
             <div class="progress-fill" id="progressFill"></div>
           </div>
@@ -1950,8 +1968,10 @@
         </div>
       </div>
       <div class="volume-control">
-        <button class="volume-btn" id="volumeBtn" aria-label="صدا">🔊</button>
-        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.7" />
+        <button type="button" class="volume-btn" id="volumeBtn" aria-label="قطع یا وصل صدا"
+          aria-pressed="false">🔊</button>
+        <input type="range" class="volume-slider" id="volumeSlider" aria-label="میزان صدا" min="0" max="1" step="0.05"
+          value="0.7" />
       </div>
     </div>
 
@@ -2009,7 +2029,7 @@
         <b>Rubika</b>
       </a>
 
-      <button class="btn" id="donateBtn">
+      <button type="button" class="btn" id="donateBtn">
         <span class="btn-icon icon-donate">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path
@@ -2021,7 +2041,7 @@
 
       <div class="divider"></div>
 
-      <button class="btn" id="aboutBtn">
+      <button type="button" class="btn" id="aboutBtn">
         <span class="btn-icon icon-about">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path
@@ -2033,7 +2053,7 @@
     </div>
 
     <div id="donateSection" class="hidden">
-      <button class="btn back-btn" id="backFromDonateBtn">⬅️<b>Back</b></button>
+      <button type="button" class="btn back-btn" id="backFromDonateBtn">⬅️<b>Back</b></button>
       <div class="buttons">
         <a href="https://sibmo.ir/hysnixi" class="btn" target="_blank" rel="noopener">
           <span class="btn-icon icon-sibmo">S</span>
@@ -2058,7 +2078,7 @@
     </div>
 
     <div id="aboutSection" class="hidden">
-      <button class="btn back-btn" id="backBtn">⬅️<b>Back</b></button>
+      <button type="button" class="btn back-btn" id="backBtn">⬅️<b>Back</b></button>
       <div class="about-text" id="aboutText"></div>
     </div>
 
@@ -2083,12 +2103,18 @@
       const welcomeOverlay = document.getElementById('welcome-overlay');
       const birthdayOverlay = document.getElementById('birthday-overlay');
 
-      if (sessionStorage.getItem('welcomeShown')) {
+      let welcomeAlreadyShown = false;
+      try { welcomeAlreadyShown = sessionStorage.getItem('welcomeShown') === '1'; } catch (error) {
+        // Continue with the intro if session storage is unavailable.
+      }
+      if (welcomeAlreadyShown) {
         if (welcomeOverlay) welcomeOverlay.remove();
         if (birthdayOverlay) birthdayOverlay.remove();
         return;
       }
-      sessionStorage.setItem('welcomeShown', '1');
+      try { sessionStorage.setItem('welcomeShown', '1'); } catch (error) {
+        // The intro still works without session storage.
+      }
 
       setTimeout(() => {
         welcomeOverlay.classList.add('hide');
@@ -2104,6 +2130,7 @@
 
             setTimeout(() => {
               birthdayOverlay.remove();
+              window.dispatchEvent(new Event('nixi:intro-finished'));
             }, 1000);
 
           }, 4500);
@@ -2113,7 +2140,10 @@
 
     const PM = (function initPerformanceManager() {
       const ua = navigator.userAgent;
-      const isMobile = /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|Opera Mini/i.test(ua);
+      const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+      const compactViewport = Math.min(window.innerWidth, window.innerHeight) <= 900;
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|Opera Mini/i.test(ua) ||
+        (coarsePointer && compactViewport && window.innerWidth <= 900);
       const isTablet = /iPad|Tablet/i.test(ua) || (isMobile && window.innerWidth >= 600);
       const cores = navigator.hardwareConcurrency || 2;
       const memory = navigator.deviceMemory || 2;
@@ -2130,9 +2160,9 @@
       else if (score < 130) tier = 'medium';
 
       const CONFIG = {
-        high: { particles: isMobile ? 45 : 90, connections: isMobile ? false : true, confetti: isMobile ? 18 : 35, targetFPS: 60, pixelCap: 2, vizBars: isMobile ? 24 : 36 },
-        medium: { particles: isMobile ? 25 : 50, connections: false, confetti: isMobile ? 12 : 20, targetFPS: 45, pixelCap: 1.5, vizBars: isMobile ? 18 : 28 },
-        low: { particles: isMobile ? 15 : 25, connections: false, confetti: isMobile ? 8 : 12, targetFPS: 30, pixelCap: 1, vizBars: isMobile ? 12 : 18 }
+        high: { particles: isMobile ? 34 : 90, connections: isMobile ? false : true, confetti: isMobile ? 14 : 35, targetFPS: 60, pixelCap: isMobile ? 1.5 : 2, vizBars: isMobile ? 20 : 36 },
+        medium: { particles: isMobile ? 20 : 50, connections: false, confetti: isMobile ? 10 : 20, targetFPS: 45, pixelCap: isMobile ? 1.25 : 1.5, vizBars: isMobile ? 16 : 28 },
+        low: { particles: isMobile ? 12 : 25, connections: false, confetti: isMobile ? 7 : 12, targetFPS: 30, pixelCap: 1, vizBars: isMobile ? 12 : 18 }
       };
       const cfg = CONFIG[tier];
 
@@ -2197,11 +2227,22 @@
       });
 
       let frameCount = 0;
+      let fpsRAF = null;
       let lastSampleTime = performance.now();
       let consecutiveLowFPS = 0;
       let consecutiveGoodFPS = 0;
 
+      function scheduleFpsTick() {
+        if (fpsRAF === null && !document.hidden && !hasIntroOverlay()) {
+          fpsRAF = requestAnimationFrame((now) => {
+            fpsRAF = null;
+            fpsTick(now);
+          });
+        }
+      }
+
       function fpsTick(now) {
+        if (document.hidden) return;
         frameCount++;
         const elapsed = now - lastSampleTime;
         if (elapsed >= 1000) {
@@ -2212,14 +2253,14 @@
           if (Date.now() < state.warmupUntil) {
             consecutiveLowFPS = 0;
             consecutiveGoodFPS = 0;
-            requestAnimationFrame(fpsTick);
+            scheduleFpsTick();
             return;
           }
 
           if (Date.now() - state.lastChangeAt < state.changeCooldownMs) {
             consecutiveLowFPS = 0;
             consecutiveGoodFPS = 0;
-            requestAnimationFrame(fpsTick);
+            scheduleFpsTick();
             return;
           }
 
@@ -2249,13 +2290,31 @@
             consecutiveGoodFPS = 0;
           }
         }
-        requestAnimationFrame(fpsTick);
+        scheduleFpsTick();
       }
-      requestAnimationFrame(fpsTick);
+      scheduleFpsTick();
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (fpsRAF !== null) cancelAnimationFrame(fpsRAF);
+          fpsRAF = null;
+        } else {
+          frameCount = 0;
+          lastSampleTime = performance.now();
+          scheduleFpsTick();
+        }
+      });
+      window.addEventListener('nixi:intro-finished', () => {
+        frameCount = 0;
+        lastSampleTime = performance.now();
+        scheduleFpsTick();
+      });
 
       function degrade() {
         state.degradationLevel++;
+        const baseCfg = CONFIG[state.tier] || CONFIG.high;
         if (state.degradationLevel === 1) {
+          state.targetFPS = Math.max(state.isMobile ? 30 : 40, Math.floor(baseCfg.targetFPS * 0.8));
           state.particleCount = Math.max(8, Math.floor(state.particleCount * 0.5));
           state.confettiCount = Math.max(5, Math.floor(state.confettiCount * 0.5));
           state.connectionsEnabled = false;
@@ -2265,6 +2324,7 @@
           }
           console.log('🛡️ PM: Degradation level 1 applied');
         } else if (state.degradationLevel === 2) {
+          state.targetFPS = Math.max(state.isMobile ? 24 : 30, Math.floor(baseCfg.targetFPS * 0.65));
           document.body.style.animation = 'none';
           document.body.classList.add('perf-low');
           state.particleCount = Math.max(5, Math.floor(state.particleCount * 0.5));
@@ -2284,6 +2344,7 @@
         const fullCfg = CONFIG[state.tier] || CONFIG.high;
 
         if (state.degradationLevel === 0) {
+          state.targetFPS = fullCfg.targetFPS;
           state.particleCount = fullCfg.particles;
           state.confettiCount = fullCfg.confetti;
           state.connectionsEnabled = fullCfg.connections;
@@ -2292,6 +2353,7 @@
           document.body.style.animation = '';
           console.log('🛡️ PM: Recovered to level 0 (full performance)');
         } else if (state.degradationLevel === 1) {
+          state.targetFPS = Math.max(state.isMobile ? 30 : 40, Math.floor(fullCfg.targetFPS * 0.8));
           state.particleCount = Math.max(8, Math.floor(fullCfg.particles * 0.5));
           state.confettiCount = Math.max(5, Math.floor(fullCfg.confetti * 0.5));
           state.connectionsEnabled = false;
@@ -2328,6 +2390,7 @@
       }
 
       function clockHealthCheck() {
+        if (document.hidden) return;
         const now = Date.now();
         const sinceTick = now - state.clock.lastTick;
 
@@ -2382,7 +2445,8 @@
         clockSyncFailure,
         markHeavyActivity,
         resetDegradation: () => {
-          state.degradationLevel = 0;
+          // recover() decrements one level, so step into level one to force a full reset.
+          state.degradationLevel = 1;
           state.warmupUntil = Date.now() + 5000;
           state.lastChangeAt = 0;
           recover();
@@ -2410,12 +2474,15 @@
       };
     })();
 
-    window.PMReport = () => console.log(PM.getReport());
+    window.PMReport = () => console.table(PM.getReport());
     window.PMReset = () => PM.resetDegradation();
 
     const themeCheckbox = document.getElementById("themeCheckbox");
     const body = document.body;
-    const savedTheme = localStorage.getItem("theme");
+    let savedTheme = "light";
+    try { savedTheme = localStorage.getItem("theme") || "light"; } catch (error) {
+      console.warn("Theme persistence is unavailable in this browser context.");
+    }
 
     if (savedTheme === "dark") {
       body.classList.add("dark");
@@ -2424,7 +2491,9 @@
 
     themeCheckbox.addEventListener("change", () => {
       body.classList.toggle("dark", themeCheckbox.checked);
-      localStorage.setItem("theme", themeCheckbox.checked ? "dark" : "light");
+      try { localStorage.setItem("theme", themeCheckbox.checked ? "dark" : "light"); } catch (error) {
+        // The visual theme still works even when storage is blocked.
+      }
     });
 
     const h1El = document.getElementById("h1");
@@ -2476,12 +2545,26 @@
       PM.clockSyncFailure();
     }
 
+    const weekdayFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long" });
+    const jalaliDateFormatter = new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn", {
+      year: "numeric", month: "numeric", day: "numeric"
+    });
+    const digitAnimation = [
+      { transform: "translateY(-100%)", opacity: 0 },
+      { transform: "translateY(0)", opacity: 1 }
+    ];
+
     function setDigit(el, digit) {
       if (el.textContent !== digit) {
         el.textContent = digit;
-        el.classList.remove("slide-down");
-        void el.offsetWidth;
-        el.classList.add("slide-down");
+        // Web Animations restarts the digit transition without a forced layout read.
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && typeof el.animate === "function") {
+          el.animate(digitAnimation, {
+            duration: 400,
+            easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+            fill: "none"
+          });
+        }
       }
     }
 
@@ -2501,20 +2584,26 @@
       setDigit(s1El, s[0]);
       setDigit(s2El, s[1]);
 
-      const dayName = now.toLocaleDateString("en-US", { weekday: "long" });
-      const jalaliDate = new Intl.DateTimeFormat('fa-IR-u-ca-persian-nu-latn', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric'
-      }).format(now);
-
+      const dayName = weekdayFormatter.format(now);
+      const jalaliDate = jalaliDateFormatter.format(now);
       dateEl.textContent = dayName + " " + jalaliDate;
     }
 
     updateClock();
     window.__clockInterval = setInterval(updateClock, 1000);
-    syncTimeWithOnlineAPI();
-    setInterval(syncTimeWithOnlineAPI, 5 * 60 * 1000);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (window.__clockInterval) clearInterval(window.__clockInterval);
+        window.__clockInterval = null;
+      } else {
+        updateClock();
+        if (!window.__clockInterval) window.__clockInterval = setInterval(updateClock, 1000);
+      }
+    });
+    if (navigator.onLine) syncTimeWithOnlineAPI();
+    setInterval(() => {
+      if (!document.hidden && navigator.onLine) syncTimeWithOnlineAPI();
+    }, 5 * 60 * 1000);
 
     const typingEl = document.getElementById("typingText");
     const messages = [
@@ -2523,15 +2612,25 @@
       "برای اطلاع از ساعت استریم عضو چنل ها شید👇🏼",
     ];
     let msgIndex = 0, charIndex = 0, deleting = false;
+    let typingTimer = null;
+
+    function scheduleTyping(delay) {
+      if (typingTimer !== null) clearTimeout(typingTimer);
+      typingTimer = setTimeout(() => {
+        typingTimer = null;
+        type();
+      }, delay);
+    }
 
     function type() {
+      if (document.hidden) return;
       const current = messages[msgIndex];
       if (!deleting) {
         typingEl.textContent = current.substring(0, charIndex + 1);
         charIndex++;
         if (charIndex === current.length) {
           deleting = true;
-          setTimeout(type, 1800);
+          scheduleTyping(1800);
           return;
         }
       } else {
@@ -2542,8 +2641,17 @@
           msgIndex = (msgIndex + 1) % messages.length;
         }
       }
-      setTimeout(type, deleting ? 50 : 100);
+      scheduleTyping(deleting ? 50 : 100);
     }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (typingTimer !== null) clearTimeout(typingTimer);
+        typingTimer = null;
+      } else {
+        type();
+      }
+    });
     type();
 
     const colors = ["#667eea", "#764ba2", "#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1"];
@@ -2565,6 +2673,8 @@
         const velocity = 4 + Math.random() * 6;
         activeConfetti.push({
           el,
+          originX: x,
+          originY: y,
           posX: x,
           posY: y,
           velX: Math.cos(angle) * velocity,
@@ -2580,6 +2690,10 @@
     }
 
     function confettiTick() {
+      if (document.hidden) {
+        confettiRAF = null;
+        return;
+      }
       if (activeConfetti.length === 0) {
         confettiRAF = null;
         return;
@@ -2594,9 +2708,8 @@
         c.rotation += 6;
         c.life--;
 
-        c.el.style.left = c.posX + "px";
-        c.el.style.top = c.posY + "px";
-        c.el.style.transform = `rotate(${c.rotation}deg)`;
+        // Transform-only movement avoids layout recalculation on every animation frame.
+        c.el.style.transform = `translate3d(${c.posX - c.originX}px, ${c.posY - c.originY}px, 0) rotate(${c.rotation}deg)`;
         c.el.style.opacity = c.life / 100;
 
         if (c.life <= 0 || c.posY > window.innerHeight) {
@@ -2607,9 +2720,18 @@
       confettiRAF = requestAnimationFrame(confettiTick);
     }
 
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (confettiRAF !== null) cancelAnimationFrame(confettiRAF);
+        confettiRAF = null;
+      } else if (activeConfetti.length && confettiRAF === null) {
+        confettiRAF = requestAnimationFrame(confettiTick);
+      }
+    });
+
     document.querySelectorAll(".btn").forEach((btn) => {
       const isTransitionBtn = btn.id === 'donateBtn' || btn.id === 'aboutBtn' ||
-                              btn.id === 'backBtn' || btn.id === 'backFromDonateBtn';
+        btn.id === 'backBtn' || btn.id === 'backFromDonateBtn';
       btn.addEventListener("click", (e) => {
         if (isTransitionBtn && window.innerWidth <= 500) return;
         createConfetti(e.clientX, e.clientY);
@@ -2632,49 +2754,107 @@
     let isDraggingProgress = false;
 
     function formatTime(seconds) {
-      if (isNaN(seconds) || seconds < 0) return "0:00";
+      if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
       const m = Math.floor(seconds / 60);
       const s = Math.floor(seconds % 60).toString().padStart(2, "0");
       return `${m}:${s}`;
     }
 
+    function updateProgressUI(time = audio.currentTime) {
+      const duration = audio.duration;
+      if (!Number.isFinite(duration) || duration <= 0) {
+        progressFill.style.width = "0%";
+        progressBar.setAttribute("aria-valuenow", "0");
+        progressBar.setAttribute("aria-valuetext", "0:00 / 0:00");
+        currentTimeEl.textContent = "0:00";
+        durationEl.textContent = "0:00";
+        return;
+      }
+
+      const safeTime = Math.max(0, Math.min(duration, Number.isFinite(time) ? time : 0));
+      const percent = (safeTime / duration) * 100;
+      progressFill.style.width = percent + "%";
+      currentTimeEl.textContent = formatTime(safeTime);
+      durationEl.textContent = formatTime(duration);
+      progressBar.setAttribute("aria-valuenow", String(Math.round(percent)));
+      progressBar.setAttribute("aria-valuetext", `${formatTime(safeTime)} / ${formatTime(duration)}`);
+    }
+
     playBtn.addEventListener("click", () => {
-      if (audio.paused) { audio.play(); } else { audio.pause(); }
+      if (audio.paused) {
+        const playAttempt = audio.play();
+        if (playAttempt && typeof playAttempt.catch === "function") {
+          playAttempt.catch((error) => {
+            // Missing/blocked media should not leave the player in a false playing state.
+            playBtn.textContent = "▶";
+            playBtn.setAttribute("aria-pressed", "false");
+            musicPlayer.classList.remove("playing");
+            if (error && error.name !== "AbortError") {
+              console.warn("Music playback could not start:", error.message || error);
+            }
+          });
+        }
+      } else {
+        audio.pause();
+      }
     });
 
     audio.addEventListener("play", () => {
       playBtn.textContent = "❚❚";
+      playBtn.setAttribute("aria-pressed", "true");
       musicPlayer.classList.add("playing");
     });
 
     audio.addEventListener("pause", () => {
       playBtn.textContent = "▶";
+      playBtn.setAttribute("aria-pressed", "false");
       musicPlayer.classList.remove("playing");
     });
 
     audio.addEventListener("timeupdate", () => {
       if (isDraggingProgress) return;
-      if (!isNaN(audio.duration) && audio.duration > 0) {
-        const percent = (audio.currentTime / audio.duration) * 100;
-        progressFill.style.width = percent + "%";
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-      }
+      updateProgressUI();
     });
 
-    audio.addEventListener("loadedmetadata", () => {
-      durationEl.textContent = formatTime(audio.duration);
+    audio.addEventListener("loadedmetadata", () => updateProgressUI());
+    audio.addEventListener("durationchange", () => updateProgressUI());
+    audio.addEventListener("error", () => {
+      playBtn.textContent = "▶";
+      playBtn.setAttribute("aria-pressed", "false");
+      musicPlayer.classList.remove("playing");
+      updateProgressUI(0);
+      console.warn("Music file could not be loaded. Check that a.mp3 is in the same folder as this HTML file.");
     });
+
+    function seekToPercent(percent) {
+      const duration = audio.duration;
+      if (!Number.isFinite(duration) || duration <= 0) return;
+      const safePercent = Math.max(0, Math.min(1, percent));
+      const time = safePercent * duration;
+      audio.currentTime = time;
+      updateProgressUI(time);
+    }
 
     function seekToClientX(clientX) {
       const rect = progressBar.getBoundingClientRect();
-      let percent = (clientX - rect.left) / rect.width;
-      percent = Math.max(0, Math.min(1, percent));
-      if (!isNaN(audio.duration) && audio.duration > 0) {
-        audio.currentTime = percent * audio.duration;
-        progressFill.style.width = (percent * 100) + "%";
-        currentTimeEl.textContent = formatTime(percent * audio.duration);
-      }
+      if (rect.width <= 0) return;
+      seekToPercent((clientX - rect.left) / rect.width);
     }
+
+    progressBar.addEventListener("keydown", (event) => {
+      if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+      const step = event.shiftKey ? 10 : 5;
+      let percent = audio.currentTime / audio.duration * 100;
+      if (event.key === "ArrowLeft" || event.key === "ArrowDown") percent -= step;
+      else if (event.key === "ArrowRight" || event.key === "ArrowUp") percent += step;
+      else if (event.key === "PageDown") percent -= 10;
+      else if (event.key === "PageUp") percent += 10;
+      else if (event.key === "Home") percent = 0;
+      else if (event.key === "End") percent = 100;
+      else return;
+      event.preventDefault();
+      seekToPercent(percent / 100);
+    });
 
     progressBar.addEventListener("pointerdown", (e) => {
       e.preventDefault();
@@ -2704,12 +2884,15 @@
 
     volumeBtn.addEventListener("click", () => {
       if (audio.volume > 0) {
-        audio.dataset.prevVolume = audio.volume;
+        audio.dataset.prevVolume = String(audio.volume);
         audio.volume = 0;
-        volumeSlider.value = 0;
+        volumeSlider.value = "0";
+        volumeBtn.setAttribute("aria-pressed", "true");
       } else {
-        audio.volume = audio.dataset.prevVolume || 0.7;
-        volumeSlider.value = audio.volume;
+        const previousVolume = Number(audio.dataset.prevVolume);
+        audio.volume = Number.isFinite(previousVolume) && previousVolume > 0 ? previousVolume : 0.7;
+        volumeSlider.value = String(audio.volume);
+        volumeBtn.setAttribute("aria-pressed", "false");
       }
       updateVolumeIcon();
     });
@@ -2831,6 +3014,10 @@
     }
 
     function drawVisualizer(now) {
+      if (document.hidden) {
+        vizRAF = null;
+        return;
+      }
       if (!vizActive && vizAmplitude < 0.005) {
         vizAmplitude = 0;
         vizTargetAmplitude = 0;
@@ -2998,14 +3185,20 @@
       drawIdleLine();
     }
     initVisualizer();
-    window.addEventListener("resize", () => {
-      setupVisualizerCanvas();
-      if (!vizActive && vizAmplitude < 0.005) drawIdleLine();
-    }, { passive: true });
 
     audio.addEventListener("play", startVisualizer);
     audio.addEventListener("pause", stopVisualizer);
     audio.addEventListener("ended", stopVisualizer);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (vizRAF !== null) cancelAnimationFrame(vizRAF);
+        vizRAF = null;
+        return;
+      }
+      if ((vizActive || vizAmplitude >= 0.005) && vizRAF === null) {
+        vizRAF = requestAnimationFrame(drawVisualizer);
+      }
+    });
 
     const aboutBtn = document.getElementById("aboutBtn");
     const aboutSection = document.getElementById("aboutSection");
@@ -3032,6 +3225,8 @@
 به جمع آناناسیمون خوش اومدی🙂💗`;
 
     const SMOOTH_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const motionDuration = (milliseconds) => prefersReducedMotion() ? 1 : milliseconds;
 
     const isMobileView = () => window.innerWidth <= 500;
 
@@ -3041,40 +3236,53 @@
       if (document.body) document.body.scrollTop = 0;
     }
 
-    const RETURN_ANIMATIONS = [
-      { name: 'Slide Up', kf: [{ opacity: 0, transform: 'translateY(30px)' }, { opacity: 1, transform: 'translateY(0)' }] },
-      { name: 'Slide Down', kf: [{ opacity: 0, transform: 'translateY(-30px)' }, { opacity: 1, transform: 'translateY(0)' }] },
-      { name: 'Slide Left', kf: [{ opacity: 0, transform: 'translateX(-40px)' }, { opacity: 1, transform: 'translateX(0)' }] },
-      { name: 'Slide Right', kf: [{ opacity: 0, transform: 'translateX(40px)' }, { opacity: 1, transform: 'translateX(0)' }] },
-      { name: 'Zoom In', kf: [{ opacity: 0, transform: 'scale(0.75)' }, { opacity: 1, transform: 'scale(1)' }] },
-      { name: 'Flip X', kf: [{ opacity: 0, transform: 'perspective(800px) rotateX(-60deg)' }, { opacity: 1, transform: 'perspective(800px) rotateX(0)' }] },
-      { name: 'Bounce In', kf: [{ opacity: 0, transform: 'translateY(35px) scale(0.92)' }, { opacity: 1, transform: 'translateY(-4px) scale(1.02)', offset: 0.6 }, { opacity: 1, transform: 'translateY(0) scale(1)' }] },
-      { name: 'Rotate In', kf: [{ opacity: 0, transform: 'rotate(-8deg) scale(0.88)' }, { opacity: 1, transform: 'rotate(0deg) scale(1)' }] },
-      { name: 'Fade In', kf: [{ opacity: 0 }, { opacity: 1 }] }
+    const RETURN_ANIMATION = [
+      { opacity: 0, transform: 'translateY(12px)' },
+      { opacity: 1, transform: 'translateY(0)' }
     ];
 
     function animateCardHeight(fromH, toH, duration) {
-      if (isMobileView()) {
+      const heightDifference = Math.abs(toH - fromH);
+      if (prefersReducedMotion() || typeof mainCard.animate !== 'function' || heightDifference < 1) {
         return Promise.resolve();
       }
 
-      duration = duration || 400;
+      const defaultDuration = isMobileView() || window.innerHeight <= 850 ? 300 : 400;
+      duration = Number.isFinite(duration) && duration > 0 ? duration : defaultDuration;
+      const previousHeight = mainCard.style.height;
+      const previousOverflow = mainCard.style.overflow;
+      const previousWillChange = mainCard.style.willChange;
+
       return new Promise((resolve) => {
-        mainCard.style.overflow = 'hidden';
-        mainCard.style.willChange = 'height';
+        let anim = null;
+        let cleaned = false;
 
-        const anim = mainCard.animate(
-          [{ height: fromH + 'px' }, { height: toH + 'px' }],
-          { duration: duration, easing: SMOOTH_EASE, fill: 'both' }
-        );
-
-        anim.onfinish = () => {
-          anim.cancel();
-          mainCard.style.height = '';
-          mainCard.style.overflow = '';
-          mainCard.style.willChange = 'auto';
+        const cleanup = () => {
+          if (cleaned) return;
+          cleaned = true;
+          if (anim) {
+            anim.removeEventListener('finish', cleanup);
+            anim.removeEventListener('cancel', cleanup);
+            try { anim.cancel(); } catch (_) { }
+          }
+          mainCard.style.height = previousHeight;
+          mainCard.style.overflow = previousOverflow;
+          mainCard.style.willChange = previousWillChange;
           resolve();
         };
+
+        mainCard.style.overflow = 'hidden';
+        mainCard.style.willChange = 'height';
+        try {
+          anim = mainCard.animate(
+            [{ height: `${fromH}px` }, { height: `${toH}px` }],
+            { duration: motionDuration(duration), easing: SMOOTH_EASE, fill: 'both' }
+          );
+          anim.addEventListener('finish', cleanup, { once: true });
+          anim.addEventListener('cancel', cleanup, { once: true });
+        } catch (error) {
+          cleanup();
+        }
       });
     }
 
@@ -3099,15 +3307,20 @@
 
         const out1 = mainButtons.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 220, easing: 'ease-out', fill: 'forwards' }
+          { duration: motionDuration(220), easing: 'ease-out', fill: 'forwards' }
         );
         const out2 = musicPlayer.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 220, easing: 'ease-out', fill: 'forwards' }
+          { duration: motionDuration(220), easing: 'ease-out', fill: 'forwards' }
         );
-        await Promise.all([out1.finished, out2.finished]);
-        out1.cancel();
-        out2.cancel();
+        try {
+          await Promise.all([out1.finished, out2.finished]);
+        } catch (_) {
+          // Continue the section switch if the browser cancels an animation.
+        } finally {
+          out1.cancel();
+          out2.cancel();
+        }
 
         aboutText.innerHTML = "";
         const lines = aboutContent.split("\n").filter((line) => line.trim() !== "");
@@ -3137,7 +3350,7 @@
             { opacity: 0, transform: 'translateY(-8px)' },
             { opacity: 1, transform: 'translateY(0)' }
           ],
-          { duration: 380, easing: SMOOTH_EASE, fill: 'both' }
+          { duration: motionDuration(380), easing: SMOOTH_EASE, fill: 'both' }
         );
 
         paragraphs.forEach((p, index) => {
@@ -3147,7 +3360,7 @@
           aboutRevealTimeouts.push(t);
         });
 
-        await sectionIn.finished;
+        try { await sectionIn.finished; } catch (_) { }
         sectionIn.cancel();
       } finally {
         isTransitioning = false;
@@ -3167,15 +3380,20 @@
 
         const out1 = mainButtons.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 220, easing: 'ease-out', fill: 'forwards' }
+          { duration: motionDuration(220), easing: 'ease-out', fill: 'forwards' }
         );
         const out2 = musicPlayer.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 220, easing: 'ease-out', fill: 'forwards' }
+          { duration: motionDuration(220), easing: 'ease-out', fill: 'forwards' }
         );
-        await Promise.all([out1.finished, out2.finished]);
-        out1.cancel();
-        out2.cancel();
+        try {
+          await Promise.all([out1.finished, out2.finished]);
+        } catch (_) {
+          // Continue the section switch if the browser cancels an animation.
+        } finally {
+          out1.cancel();
+          out2.cancel();
+        }
 
         mainButtons.classList.add('hidden');
         musicPlayer.classList.add('hidden');
@@ -3200,10 +3418,10 @@
             { opacity: 0, transform: 'translateY(-8px)' },
             { opacity: 1, transform: 'translateY(0)' }
           ],
-          { duration: 380, easing: SMOOTH_EASE, fill: 'both' }
+          { duration: motionDuration(380), easing: SMOOTH_EASE, fill: 'both' }
         );
 
-        await sectionIn.finished;
+        try { await sectionIn.finished; } catch (_) { }
         sectionIn.cancel();
       } finally {
         isTransitioning = false;
@@ -3225,9 +3443,9 @@
 
         const outAnim = activeSection.animate(
           [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 180, easing: 'ease-out', fill: 'forwards' }
+          { duration: motionDuration(180), easing: 'ease-out', fill: 'forwards' }
         );
-        await outAnim.finished;
+        try { await outAnim.finished; } catch (_) { }
         outAnim.cancel();
 
         if (fromSection === 'about') {
@@ -3252,27 +3470,32 @@
         const newHeight = mainCard.offsetHeight;
         await animateCardHeight(oldHeight, newHeight);
 
-        const pick = RETURN_ANIMATIONS[Math.floor(Math.random() * RETURN_ANIMATIONS.length)];
-
         musicPlayer.style.opacity = '';
         items.forEach(el => { el.style.opacity = ''; });
 
-        const mpAnim = musicPlayer.animate(pick.kf, {
-          duration: 480, easing: SMOOTH_EASE, fill: 'both'
+        const returnDuration = isMobileView() ? 240 : 280;
+        const mpAnim = musicPlayer.animate(RETURN_ANIMATION, {
+          duration: motionDuration(returnDuration), easing: SMOOTH_EASE, fill: 'both'
         });
         const itemAnims = items.map((el, i) =>
-          el.animate(pick.kf, {
-            duration: 480,
-            delay: 60 + i * 30,
+          el.animate(RETURN_ANIMATION, {
+            duration: motionDuration(returnDuration),
+            delay: prefersReducedMotion() ? 0 : 20 + i * 15,
             easing: SMOOTH_EASE,
             fill: 'both'
           })
         );
 
         const allAnims = [mpAnim, ...itemAnims];
-        Promise.all(allAnims.map(a => a.finished))
-          .then(() => { allAnims.forEach(a => a.cancel()); })
-          .catch(() => { });
+        try {
+          await Promise.all(allAnims.map((animation) => animation.finished));
+        } catch (_) {
+          // A cancelled animation must not block future navigation.
+        } finally {
+          allAnims.forEach((animation) => {
+            try { animation.cancel(); } catch (_) { }
+          });
+        }
       } finally {
         isTransitioning = false;
       }
@@ -3292,20 +3515,30 @@
 
     function resize() {
       const ratio = Math.min(window.devicePixelRatio || 1, PM.state.pixelCap);
-      canvas.width = window.innerWidth * ratio;
-      canvas.height = window.innerHeight * ratio;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
+      const cssWidth = Math.max(1, window.innerWidth);
+      const cssHeight = Math.max(1, window.innerHeight);
+      const backingWidth = Math.max(1, Math.round(cssWidth * ratio));
+      const backingHeight = Math.max(1, Math.round(cssHeight * ratio));
+
+      if (canvas.width !== backingWidth || canvas.height !== backingHeight) {
+        canvas.width = backingWidth;
+        canvas.height = backingHeight;
+      }
+      if (canvas.style.width !== cssWidth + "px") canvas.style.width = cssWidth + "px";
+      if (canvas.style.height !== cssHeight + "px") canvas.style.height = cssHeight + "px";
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     }
     resize();
-    window.addEventListener("resize", resize, { passive: true });
 
-    window.addEventListener("mousemove", (e) => { mouse.x = e.x; mouse.y = e.y; }, { passive: true });
-    window.addEventListener("touchmove", (e) => {
-      if (e.touches.length > 0) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
-    }, { passive: true });
-    window.addEventListener("mouseout", () => { mouse.x = null; mouse.y = null; });
+    // Pointer attraction is useful with a mouse; avoid touchmove work on phones.
+    if (!PM.state.isMobile) {
+      window.addEventListener("pointermove", (e) => {
+        if (e.pointerType === "touch") return;
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }, { passive: true });
+      window.addEventListener("pointerleave", () => { mouse.x = null; mouse.y = null; }, { passive: true });
+    }
 
     class Particle {
       constructor() {
@@ -3351,7 +3584,17 @@
       initParticles();
     });
 
-    window.addEventListener("resize", initParticles, { passive: true });
+    let viewportResizeTimer = 0;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(viewportResizeTimer);
+      viewportResizeTimer = window.setTimeout(() => {
+        resize();
+        initParticles();
+        setupVisualizerCanvas();
+        if (!vizActive && vizAmplitude < 0.005) drawIdleLine();
+        lastFrameTime = 0;
+      }, 120);
+    }, { passive: true });
 
     function connectParticles() {
       if (!PM.state.connectionsEnabled) return;
@@ -3373,29 +3616,70 @@
       }
     }
 
-    const frameInterval = 1000 / PM.state.targetFPS;
+    let particleRAF = null;
     let lastFrameTime = 0;
 
-    function animate(timestamp) {
-      requestAnimationFrame(animate);
-
-      if (!timestamp) timestamp = performance.now();
-      if (timestamp - lastFrameTime < frameInterval - 1) return;
-      lastFrameTime = timestamp;
-
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      particles.forEach((p) => { p.update(); p.draw(); });
-      connectParticles();
+    function hasIntroOverlay() {
+      // These opaque overlays cover the background, so do not render particles behind them.
+      return !!document.getElementById("welcome-overlay") || !!document.getElementById("birthday-overlay");
     }
-    requestAnimationFrame(animate);
 
-    setInterval(() => {
-      const r = PM.getReport();
-      const c = r.clock;
-      console.log(`Health | Tier: ${r.tier} | BatterySaver: ${r.batterySaver} | Particles: ${r.particles} | Degradation: ${r.degradation}/2 | Errors: ${r.errors} | Uptime: ${r.uptime}s | Warmup: ${r.warmupRemainingMs}ms | Cooldown: ${r.cooldownRemainingMs}ms`);
-    }, 60000);
+    function scheduleParticleFrame() {
+      if (particleRAF === null && !document.hidden && !hasIntroOverlay()) {
+        particleRAF = requestAnimationFrame(animate);
+      }
+    }
 
-    console.log("HYS NIXI loaded successfully — type PMReport() or PMReset() in console for debugging");
+    function animate(timestamp) {
+      particleRAF = null;
+      if (document.hidden || hasIntroOverlay()) return;
+      if (!timestamp) timestamp = performance.now();
+
+      // Lower the rendering target only when the performance manager detects sustained load.
+      const mobileFloor = PM.state.isMobile ? 24 : 30;
+      const targetFPS = Math.max(mobileFloor, PM.state.targetFPS);
+      const frameInterval = 1000 / targetFPS;
+      if (timestamp - lastFrameTime >= frameInterval - 1) {
+        lastFrameTime = timestamp;
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+        }
+        connectParticles();
+      }
+      scheduleParticleFrame();
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (particleRAF !== null) cancelAnimationFrame(particleRAF);
+        particleRAF = null;
+      } else {
+        lastFrameTime = 0;
+        scheduleParticleFrame();
+      }
+    });
+    window.addEventListener("nixi:intro-finished", () => {
+      lastFrameTime = 0;
+      scheduleParticleFrame();
+    });
+    window.addEventListener("pm:rebuild-particles", scheduleParticleFrame);
+    scheduleParticleFrame();
+
+    // Add ?debug=1 to the URL to enable periodic diagnostics; normal visitors get a quiet console.
+    if (new URLSearchParams(window.location.search).get("debug") === "1") {
+      window.__nixiHealthTimer = setInterval(() => {
+        if (document.hidden) return;
+        const r = PM.getReport();
+        console.info("NIXI health", {
+          tier: r.tier, mobile: r.isMobile, particles: r.particles,
+          degradation: r.degradation, errors: r.errors, uptimeSeconds: r.uptime
+        });
+      }, 60000);
+    }
+
+    console.info("HYS NIXI ready. Use PMReport() or PMReset() in the developer console for diagnostics.");
   </script>
 </body>
 
