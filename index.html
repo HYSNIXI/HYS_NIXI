@@ -8,6 +8,13 @@
   <meta name="theme-color" content="#667eea" />
   <title>HYS NIXI</title>
 
+  <!-- محدودسازی راست‌کلیک؛ این کار سورس سایت را مخفی نمی‌کند. -->
+  <script>
+    document.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+    }, { capture: true });
+  </script>
+
   <style>
     :root {
       --primary: #667eea;
@@ -16,6 +23,7 @@
       --text: #333333;
       --muted: #888888;
       --shadow: rgba(0, 0, 0, 0.25);
+
       --border: rgba(102, 126, 234, 0.2);
       --clock-bg: rgba(102, 126, 234, 0.1);
       --clock-border: rgba(102, 126, 234, 0.25);
@@ -1265,214 +1273,6 @@
       }
     }
 
-    #birthday-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 99998;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-      color: #fff;
-      font-family: Tahoma, sans-serif;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 1s ease, visibility 1s ease;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    #birthday-overlay.show {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    #birthday-overlay.hide {
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 1s ease, visibility 1s ease;
-    }
-
-    .bday-glow {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 107, 107, 0.3) 0%, rgba(255, 107, 107, 0) 70%);
-      animation: bdayGlow 3s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes bdayGlow {
-
-      0%,
-      100% {
-        transform: scale(1);
-        opacity: 0.6;
-      }
-
-      50% {
-        transform: scale(1.3);
-        opacity: 1;
-      }
-    }
-
-    .bday-text {
-      font-size: 38px;
-      font-weight: 900;
-      text-align: center;
-      background: linear-gradient(90deg, #ff6b6b, #feca57, #ff6b6b);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: bdayShine 2s linear infinite, bdayEnter 1s cubic-bezier(0.22, 1, 0.36, 1) both;
-      position: relative;
-      z-index: 2;
-      text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
-    }
-
-    @keyframes bdayShine {
-      to {
-        background-position: 200% center;
-      }
-    }
-
-    @keyframes bdayEnter {
-      0% {
-        opacity: 0;
-        transform: translateY(30px) scale(0.8);
-      }
-
-      60% {
-        opacity: 1;
-        transform: translateY(-5px) scale(1.05);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .bday-name {
-      font-size: 60px;
-      font-weight: 900;
-      letter-spacing: 4px;
-      margin: 15px 0 5px;
-      background: linear-gradient(90deg, #fff, #c7d2fe, #fff);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: bdayShine 2.5s linear infinite;
-      position: relative;
-      z-index: 2;
-    }
-
-    .bday-age {
-      font-size: 100px;
-      font-weight: 900;
-      color: #feca57;
-      text-shadow: 0 0 30px rgba(254, 202, 87, 0.5);
-      animation: bdayFloat 3s ease-in-out infinite;
-      position: relative;
-      z-index: 2;
-    }
-
-    @keyframes bdayFloat {
-
-      0%,
-      100% {
-        transform: translateY(0) scale(1);
-      }
-
-      50% {
-        transform: translateY(-15px) scale(1.05);
-      }
-    }
-
-    .bday-balloons {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .balloon {
-      position: absolute;
-      bottom: -100px;
-      width: 40px;
-      height: 50px;
-      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      animation: flyUp 6s ease-in infinite;
-      opacity: 0;
-    }
-
-    .balloon::after {
-      content: "";
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      width: 1px;
-      height: 15px;
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .balloon:nth-child(1) {
-      left: 10%;
-      background: #ff6b6b;
-      animation-delay: 0s;
-      animation-duration: 5s;
-    }
-
-    .balloon:nth-child(2) {
-      left: 30%;
-      background: #feca57;
-      animation-delay: 1s;
-      animation-duration: 7s;
-    }
-
-    .balloon:nth-child(3) {
-      left: 50%;
-      background: #48dbfb;
-      animation-delay: 0.5s;
-      animation-duration: 6s;
-    }
-
-    .balloon:nth-child(4) {
-      left: 70%;
-      background: #1dd1a1;
-      animation-delay: 1.5s;
-      animation-duration: 5.5s;
-    }
-
-    .balloon:nth-child(5) {
-      left: 90%;
-      background: #f368e0;
-      animation-delay: 0.2s;
-      animation-duration: 7.5s;
-    }
-
-    @keyframes flyUp {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0;
-      }
-
-      20% {
-        opacity: 0.8;
-      }
-
-      100% {
-        transform: translateY(-120vh) rotate(20deg);
-        opacity: 0;
-      }
-    }
-
     @media (max-width: 400px) {
       .welcome-text {
         font-size: 34px;
@@ -1497,18 +1297,6 @@
       .welcome-glow {
         width: 240px;
         height: 240px;
-      }
-
-      .bday-text {
-        font-size: 28px;
-      }
-
-      .bday-name {
-        font-size: 45px;
-      }
-
-      .bday-age {
-        font-size: 80px;
       }
     }
 
@@ -1892,20 +1680,6 @@
     <div class="welcome-sub">HYS NIXI</div>
   </div>
 
-  <div id="birthday-overlay" aria-hidden="true">
-    <div class="bday-balloons">
-      <div class="balloon"></div>
-      <div class="balloon"></div>
-      <div class="balloon"></div>
-      <div class="balloon"></div>
-      <div class="balloon"></div>
-    </div>
-    <div class="bday-glow"></div>
-    <div class="bday-text">Happy Birthday</div>
-    <div class="bday-name">NIXI</div>
-    <div class="bday-age">26</div>
-  </div>
-
   <canvas id="particles"></canvas>
 
   <div class="card" id="mainCard">
@@ -2082,7 +1856,7 @@
       <div class="about-text" id="aboutText"></div>
     </div>
 
-    <div class="footer">⏰ Created By: HYS_Clock</div>
+    <div class="footer">Created By: HYS Clcok & MAX</div>
   </div>
 
   <audio id="bgMusic" loop preload="metadata">
@@ -2101,7 +1875,6 @@
 
     (function initOverlays() {
       const welcomeOverlay = document.getElementById('welcome-overlay');
-      const birthdayOverlay = document.getElementById('birthday-overlay');
 
       let welcomeAlreadyShown = false;
       try { welcomeAlreadyShown = sessionStorage.getItem('welcomeShown') === '1'; } catch (error) {
@@ -2109,7 +1882,7 @@
       }
       if (welcomeAlreadyShown) {
         if (welcomeOverlay) welcomeOverlay.remove();
-        if (birthdayOverlay) birthdayOverlay.remove();
+        window.dispatchEvent(new Event('nixi:intro-finished'));
         return;
       }
       try { sessionStorage.setItem('welcomeShown', '1'); } catch (error) {
@@ -2117,23 +1890,15 @@
       }
 
       setTimeout(() => {
+        if (!welcomeOverlay) {
+          window.dispatchEvent(new Event('nixi:intro-finished'));
+          return;
+        }
         welcomeOverlay.classList.add('hide');
 
         setTimeout(() => {
           welcomeOverlay.remove();
-
-          birthdayOverlay.classList.add('show');
-
-          setTimeout(() => {
-            birthdayOverlay.classList.remove('show');
-            birthdayOverlay.classList.add('hide');
-
-            setTimeout(() => {
-              birthdayOverlay.remove();
-              window.dispatchEvent(new Event('nixi:intro-finished'));
-            }, 1000);
-
-          }, 4500);
+          window.dispatchEvent(new Event('nixi:intro-finished'));
         }, 1000);
       }, 3800);
     })();
@@ -2383,9 +2148,13 @@
         state.clock.consecutiveFailures = 0;
       }
 
-      function clockSyncFailure() {
-        state.clock.syncStatus = 'system';
-        state.clock.source = 'system';
+      function clockSyncFailure(keepLastSync = false) {
+        // Keep the last trusted server-time baseline when a refresh fails.
+        // The displayed clock can continue from the monotonic performance timer.
+        if (!keepLastSync) {
+          state.clock.syncStatus = 'system';
+          state.clock.source = 'system';
+        }
         state.clock.consecutiveFailures++;
       }
 
@@ -2426,15 +2195,21 @@
 
       window.addEventListener('online', () => {
         state.clock.isOnline = true;
-        console.log('🌐 Network back online - re-syncing clock...');
-        if (typeof syncTimeWithOnlineAPI === 'function') syncTimeWithOnlineAPI();
+        console.log('🌐 Network back online - clock sync will resume');
+        // The clock module below owns the single synchronization request.
       });
 
       window.addEventListener('offline', () => {
         state.clock.isOnline = false;
-        state.clock.syncStatus = 'system';
-        state.clock.source = 'system';
-        console.log('📴 Network offline - using system clock');
+        // If a server baseline exists, it remains usable offline. The clock
+        // falls back to the device clock only when no successful sync exists.
+        if (state.clock.syncStatus !== 'synced') {
+          state.clock.syncStatus = 'system';
+          state.clock.source = 'system';
+        }
+        console.log(state.clock.syncStatus === 'synced'
+          ? '📴 Network offline - continuing from last synchronized time'
+          : '📴 Network offline - using system clock');
       });
 
       return {
@@ -2504,49 +2279,167 @@
     const s2El = document.getElementById("s2");
     const dateEl = document.getElementById("clockDate");
 
-    let timeOffset = 0;
+    // This website's clock is intended to show Tehran local time and the
+    // Persian (Jalali) calendar, regardless of the visitor's device timezone.
+    const CLOCK_TIME_ZONE = "Asia/Tehran";
     let isTimeSynced = false;
+    let syncedEpochAtPerformance = 0;
+    let syncedPerformanceAt = 0;
+    let syncPromise = null;
 
-    async function syncTimeWithOnlineAPI() {
-      try {
-        const res = await fetch('https://time.now/developer/api/timezone/Asia/Tehran', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          timeOffset = new Date(data.datetime).getTime() - Date.now();
-          isTimeSynced = true;
-          PM.clockSyncSuccess('time.now');
-          return;
-        }
-      } catch (e) { }
-
-      try {
-        const res = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Tehran', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          timeOffset = new Date(data.dateTime).getTime() - Date.now();
-          isTimeSynced = true;
-          PM.clockSyncSuccess('timeapi.io');
-          return;
-        }
-      } catch (e) { }
-
-      try {
-        const res = await fetch('https://timeapi.world/api/timezone/Asia/Tehran', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          timeOffset = new Date(data.datetime).getTime() - Date.now();
-          isTimeSynced = true;
-          PM.clockSyncSuccess('timeapi.world');
-          return;
-        }
-      } catch (e) { }
-
-      isTimeSynced = false;
-      PM.clockSyncFailure();
+    function getClockEpochMs() {
+      if (isTimeSynced && Number.isFinite(syncedEpochAtPerformance) && Number.isFinite(syncedPerformanceAt)) {
+        // Use the monotonic performance clock after sync, so manual changes to
+        // the device's wall clock do not cause the displayed clock to jump.
+        return syncedEpochAtPerformance + (performance.now() - syncedPerformanceAt);
+      }
+      // Offline/first-load fallback: trust the device's current instant, but
+      // still format it for Asia/Tehran below.
+      return Date.now();
     }
 
-    const weekdayFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long" });
+    function parseZonedWallTime(value, timeZone) {
+      // TimeAPI.io returns dateTime without an offset. Convert those local wall
+      // clock fields to an instant using the API's explicit IANA timezone.
+      if (typeof value !== "string") return NaN;
+      const match = value.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?/);
+      if (!match) return NaN;
+
+      const [, year, month, day, hour, minute, second, fraction = ""] = match;
+      const milliseconds = Number((fraction + "000").slice(0, 3));
+      const wallAsUtc = Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second), milliseconds);
+      const partsFormatter = new Intl.DateTimeFormat("en-GB", {
+        timeZone,
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+      });
+
+      let candidate = wallAsUtc;
+      // Iteratively solve for the instant whose formatted wall time matches the
+      // API fields. Re-running handles timezone offsets and transition rules.
+      for (let i = 0; i < 3; i++) {
+        const parts = Object.fromEntries(partsFormatter.formatToParts(new Date(candidate))
+          .filter(part => part.type !== "literal")
+          .map(part => [part.type, Number(part.value)]));
+        const formattedAsUtc = Date.UTC(parts.year, parts.month - 1, parts.day,
+          parts.hour, parts.minute, parts.second, milliseconds);
+        const offset = formattedAsUtc - candidate;
+        const nextCandidate = wallAsUtc - offset;
+        if (!Number.isFinite(nextCandidate)) return NaN;
+        if (nextCandidate === candidate) break;
+        candidate = nextCandidate;
+      }
+      return candidate;
+    }
+
+    function getApiEpochMs(data, endpointTimeZone = CLOCK_TIME_ZONE) {
+      if (!data || typeof data !== "object") return NaN;
+      if (data.timezone && data.timezone !== CLOCK_TIME_ZONE) return NaN;
+      if (data.timeZone && data.timeZone !== CLOCK_TIME_ZONE) return NaN;
+
+      // Prefer timestamps carrying an explicit UTC offset (no browser-local
+      // interpretation), then the UTC timestamp, Unix time, and finally the
+      // timezone-qualified wall-clock string from TimeAPI.io.
+      for (const key of ["datetime", "utc_datetime", "utcDateTime", "dateTime"]) {
+        const value = data[key];
+        if (typeof value !== "string") continue;
+        if (/(?:Z|[+-]\d{2}:?\d{2})$/i.test(value)) {
+          const parsed = Date.parse(value);
+          if (Number.isFinite(parsed)) return parsed;
+        }
+      }
+
+      if (data.unixtime !== undefined && data.unixtime !== null && data.unixtime !== "" && Number.isFinite(Number(data.unixtime))) {
+        return Number(data.unixtime) * 1000;
+      }
+      if (data.timestamp !== undefined && data.timestamp !== null && data.timestamp !== "" && Number.isFinite(Number(data.timestamp))) {
+        // Some APIs supply Unix time in seconds, others in milliseconds.
+        const timestamp = Number(data.timestamp);
+        return timestamp < 1e12 ? timestamp * 1000 : timestamp;
+      }
+
+      if (typeof data.dateTime === "string") {
+        return parseZonedWallTime(data.dateTime, data.timeZone || endpointTimeZone);
+      }
+      return NaN;
+    }
+
+    async function fetchTimeFromEndpoint(url, source) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const requestStartedAt = performance.now();
+      try {
+        const res = await fetch(url, {
+          cache: "no-store",
+          credentials: "omit",
+          signal: controller.signal
+        });
+        if (!res.ok) throw new Error(`${source} returned HTTP ${res.status}`);
+        const data = await res.json();
+        const serverEpoch = getApiEpochMs(data, CLOCK_TIME_ZONE);
+        const receivedAt = performance.now();
+        if (!Number.isFinite(serverEpoch) || serverEpoch < 0) {
+          throw new Error(`${source} returned an invalid time payload`);
+        }
+
+        // Compensate approximately for half the request/response latency.
+        const roundTripMs = Math.max(0, receivedAt - requestStartedAt);
+        syncedEpochAtPerformance = serverEpoch + roundTripMs / 2;
+        syncedPerformanceAt = receivedAt;
+        isTimeSynced = true;
+        PM.clockSyncSuccess(source);
+        updateClock();
+        return true;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    async function syncTimeWithOnlineAPI() {
+      if (syncPromise) return syncPromise;
+      if (!navigator.onLine) return false;
+
+      syncPromise = (async () => {
+        const endpoints = [
+          ["https://time.now/developer/api/timezone/Asia/Tehran", "time.now"],
+          ["https://gateway.timeapi.world/timezone/Asia/Tehran", "timeapi.world"],
+          ["https://www.timeapi.io/api/Time/current/zone?timeZone=Asia%2FTehran", "timeapi.io"]
+        ];
+
+        for (const [url, source] of endpoints) {
+          try {
+            if (await fetchTimeFromEndpoint(url, source)) return true;
+          } catch (error) {
+            // Continue to the next independent service. Abort/HTTP/CORS errors
+            // are expected possibilities for public services in a browser.
+            console.warn(`Clock sync failed (${source}); trying the next provider.`, error?.message || error);
+          }
+        }
+
+        PM.clockSyncFailure(isTimeSynced);
+        return false;
+      })();
+
+      try {
+        return await syncPromise;
+      } finally {
+        syncPromise = null;
+      }
+    }
+
+    const clockTimeFormatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone: CLOCK_TIME_ZONE,
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hourCycle: "h23"
+    });
+    const weekdayFormatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: CLOCK_TIME_ZONE,
+      weekday: "long"
+    });
     const jalaliDateFormatter = new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn", {
+      timeZone: CLOCK_TIME_ZONE,
+      calendar: "persian",
+      numberingSystem: "latn",
       year: "numeric", month: "numeric", day: "numeric"
     });
     const digitAnimation = [
@@ -2555,7 +2448,7 @@
     ];
 
     function setDigit(el, digit) {
-      if (el.textContent !== digit) {
+      if (el && el.textContent !== digit) {
         el.textContent = digit;
         // Web Animations restarts the digit transition without a forced layout read.
         if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && typeof el.animate === "function") {
@@ -2570,12 +2463,13 @@
 
     function updateClock() {
       PM.clockTick();
-
-      const now = isTimeSynced ? new Date(Date.now() + timeOffset) : new Date();
-
-      const h = now.getHours().toString().padStart(2, "0");
-      const m = now.getMinutes().toString().padStart(2, "0");
-      const s = now.getSeconds().toString().padStart(2, "0");
+      const now = new Date(getClockEpochMs());
+      const parts = Object.fromEntries(clockTimeFormatter.formatToParts(now)
+        .filter(part => part.type !== "literal")
+        .map(part => [part.type, part.value]));
+      const h = (parts.hour || "00").padStart(2, "0");
+      const m = (parts.minute || "00").padStart(2, "0");
+      const s = (parts.second || "00").padStart(2, "0");
 
       setDigit(h1El, h[0]);
       setDigit(h2El, h[1]);
@@ -2586,7 +2480,7 @@
 
       const dayName = weekdayFormatter.format(now);
       const jalaliDate = jalaliDateFormatter.format(now);
-      dateEl.textContent = dayName + " " + jalaliDate;
+      if (dateEl) dateEl.textContent = dayName + " " + jalaliDate;
     }
 
     updateClock();
@@ -2598,9 +2492,11 @@
       } else {
         updateClock();
         if (!window.__clockInterval) window.__clockInterval = setInterval(updateClock, 1000);
+        if (navigator.onLine) syncTimeWithOnlineAPI();
       }
     });
     if (navigator.onLine) syncTimeWithOnlineAPI();
+    window.addEventListener("online", () => syncTimeWithOnlineAPI());
     setInterval(() => {
       if (!document.hidden && navigator.onLine) syncTimeWithOnlineAPI();
     }, 5 * 60 * 1000);
@@ -3621,7 +3517,7 @@
 
     function hasIntroOverlay() {
       // These opaque overlays cover the background, so do not render particles behind them.
-      return !!document.getElementById("welcome-overlay") || !!document.getElementById("birthday-overlay");
+      return !!document.getElementById("welcome-overlay");
     }
 
     function scheduleParticleFrame() {
