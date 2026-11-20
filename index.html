@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-lang="en" data-mode="dark" data-theme="mint" data-gauge="instrument">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Internet Speed</title>
+  <meta name="description"
+    content="سنجش سرعت اینترنت با چند اتصال موازی به لبه‌ی Cloudflare: دانلود، آپلود، پینگ، جیتر و پکت‌لاس با محاسبه‌ی سرعت پایدار.">
+  <meta name="theme-color" content="#080A0D" id="themeColor">
+  <script>
+    // Restore preferences before first paint so the page never flashes the wrong
+    // language, mode, accent or gauge face. First visits get English + dark.
+    try {
+      var storedLang = localStorage.getItem('netgauge-lang') === 'fa' ? 'fa' : 'en';
+      var storedMode = localStorage.getItem('netgauge-mode');
+      if (storedMode !== 'light' && storedMode !== 'dark') storedMode = 'dark';
+      var storedTheme = localStorage.getItem('netgauge-theme');
+      if (!/^(mint|violet|rose|ice|lime)$/.test(storedTheme)) storedTheme = 'mint';
+      var storedGauge = localStorage.getItem('netgauge-gauge');
+      if (!/^(instrument|rainbow|halo)$/.test(storedGauge)) storedGauge = 'instrument';
+      var root = document.documentElement;
+      root.lang = storedLang;
+      root.dir = storedLang === 'fa' ? 'rtl' : 'ltr';
+      root.dataset.lang = storedLang;
+      root.dataset.mode = storedMode;
+      root.dataset.theme = storedTheme;
+      root.dataset.gauge = storedGauge;
+      document.getElementById('themeColor').setAttribute('content', storedMode === 'light' ? '#EDF1F6' : '#080A0D');
+    } catch (e) { }
+  </script>
+  <meta property="og:title" content="Internet Speed">
+  <meta property="og:description"
+    content="Parallel-stream speed test with warm-up removed: download, upload, latency, jitter, packet loss.">
+  <meta property="og:type" content="website">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080A0D'/%3E%3Cpath d='M13 41a19 19 0 0 1 38 0' fill='none' stroke='%235CF2B0' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M32 41l10-15' stroke='%23E8EFF6' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='41' r='3.5' fill='%235CF2B0'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Vazirmatn:wght@300;400;500;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Internet Speed">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M4.5 23a11.5 11.5 0 0 1 23 0" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" />
+        <path d="M16 23l6.2-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <circle cx="16" cy="23" r="2" fill="currentColor" />
+      </svg>
+      <span class="brand-text">
+        <span class="brand-name">Internet Speed</span>
+        <span class="brand-tag" data-i18n="brandTag">NETWORK INSTRUMENT</span>
+      </span>
+    </a>
+
+    <div class="topbar-actions">
+      <span class="conn-chip" id="connChip" hidden>
+        <span class="led led-tiny" aria-hidden="true"></span>
+        <span class="mono" id="connChipText"></span>
+      </span>
+
+      <button class="theme-switch" id="themeSwitch" type="button" role="switch" aria-checked="false"
+        aria-label="Switch to light mode">
+        <span class="ts-body" aria-hidden="true">
+          <span class="ts-edge ts-edge-sun"></span>
+          <span class="ts-edge ts-edge-moon"></span>
+          <span class="ts-knob">
+            <svg class="ts-moon" viewBox="0 0 24 24">
+              <path d="M15.9 3.6a8.6 8.6 0 1 0 4.5 12.9A7.1 7.1 0 0 1 15.9 3.6Z" fill="#eaf3ff" />
+              <circle cx="8.6" cy="10.6" r=".85" fill="#cfe6ff" />
+              <circle cx="7" cy="14.2" r=".55" fill="#bcd8f5" />
+            </svg>
+            <svg class="ts-sun-glyph" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4.1" fill="currentColor" />
+              <g stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+                <path
+                  d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3L17 7M7 17l-1.7 1.7" />
+              </g>
+            </svg>
+          </span>
+        </span>
+      </button>
+
+      <button class="settings-btn" id="settingsBtn" type="button" aria-haspopup="dialog" aria-expanded="false"
+        aria-controls="settingsPop" aria-label="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3.1" />
+          <path
+            d="M19.4 14.4a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.11a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.11a1.7 1.7 0 0 0 1.56-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.11a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.11a1.7 1.7 0 0 0-1.49 1.03Z" />
+        </svg>
+      </button>
+
+      <div class="settings-pop" id="settingsPop" data-open="false" role="dialog" aria-label="Settings">
+        <div class="settings-section">
+          <span class="settings-label" data-i18n="languageLabel">Language</span>
+          <div class="seg">
+            <button class="seg-btn" type="button" data-lang-choice="fa" aria-pressed="false">فارسی</button>
+            <button class="seg-btn" type="button" data-lang-choice="en" aria-pressed="true">English</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <span class="settings-label" data-i18n="themeLabel">Color theme</span>
+          <div class="swatches" id="themeSwatches" role="radiogroup" data-i18n-aria="themeLabel"></div>
+        </div>
+        <div class="settings-section">
+          <span class="settings-label" data-i18n="gaugeLabel">Needle style</span>
+          <div class="gauge-styles" id="gaugeStyles" role="radiogroup" data-i18n-aria="gaugeLabel">
+            <button class="gstyle" type="button" data-gauge-choice="instrument" role="radio" aria-checked="true"
+              aria-label="Instrument">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <path d="M6.5 29.5a13.5 13.5 0 0 1 27 0" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" />
+                <path d="M20 27l6.8-9.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                <circle cx="20" cy="27" r="2" fill="currentColor" />
+              </svg>
+              <span data-i18n="gauge_instrument">Instrument</span>
+            </button>
+            <button class="gstyle" type="button" data-gauge-choice="rainbow" role="radio" aria-checked="false"
+              aria-label="Rainbow">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <defs>
+                  <linearGradient id="gstyleRainbow" x1="6" y1="30" x2="34" y2="30" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#ef4436" />
+                    <stop offset=".28" stop-color="#f5a02c" />
+                    <stop offset=".5" stop-color="#f3d24a" />
+                    <stop offset=".72" stop-color="#46d67a" />
+                    <stop offset="1" stop-color="#3bc4dc" />
+                  </linearGradient>
+                </defs>
+                <path d="M6.5 29.5a13.5 13.5 0 0 1 27 0" fill="none" stroke="url(#gstyleRainbow)" stroke-width="4.6" />
+                <path d="M20 27l6.8-9.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+              <span data-i18n="gauge_rainbow">Rainbow</span>
+            </button>
+            <button class="gstyle" type="button" data-gauge-choice="halo" role="radio" aria-checked="false"
+              aria-label="Halo">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <circle cx="20" cy="20" r="14.5" fill="none" stroke="currentColor" stroke-width="1" opacity=".3" />
+                <circle cx="20" cy="20" r="14.5" fill="none" stroke="currentColor" stroke-width="3.4"
+                  stroke-dasharray="1 3.2" opacity=".75" />
+                <path d="M20 20l8.4-1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <circle cx="20" cy="20" r="1.7" fill="currentColor" />
+              </svg>
+              <span data-i18n="gauge_halo">Halo</span>
+            </button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <span class="settings-label" data-i18n="hapticLabel">Vibration</span>
+          <div class="seg seg-4" id="hapticSeg" role="radiogroup" data-i18n-aria="hapticLabel">
+            <button class="seg-btn" type="button" data-haptic-choice="off" role="radio" aria-checked="false"
+              data-i18n="haptic_off">Off</button>
+            <button class="seg-btn" type="button" data-haptic-choice="soft" role="radio" aria-checked="false"
+              data-i18n="haptic_soft">Soft</button>
+            <button class="seg-btn" type="button" data-haptic-choice="medium" role="radio" aria-checked="true"
+              data-i18n="haptic_medium">Medium</button>
+            <button class="seg-btn" type="button" data-haptic-choice="strong" role="radio" aria-checked="false"
+              data-i18n="haptic_strong">Strong</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow"><span class="eyebrow-mark" aria-hidden="true"></span><span data-i18n="eyebrow">Network
+          measurement instrument</span></p>
+      <h1 data-i18n="h1">Measure what your line actually delivers</h1>
+    </section>
+
+    <section class="console" id="console" data-phase="idle" aria-labelledby="consoleStatus">
+      <div class="console-head">
+        <div class="status">
+          <span class="led" id="phaseLed" aria-hidden="true"></span>
+          <span id="phaseLabel" aria-live="polite">Ready</span>
+        </div>
+        <div class="record-chip" id="recordChip">
+          <span class="record-line">
+            <span class="record-label" data-i18n="recordLabel">Record</span>
+            <span class="record-sep" aria-hidden="true">/</span>
+            <span class="record-vals mono num" id="recordVals">—</span>
+          </span>
+          <span class="record-date" id="recordDate"></span>
+        </div>
+      </div>
+
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 440 400" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="bladeGrad" x1="0" y1="66" x2="0" y2="232" gradientUnits="userSpaceOnUse">
+              <stop class="blade-stop-tip" offset="0" />
+              <stop class="blade-stop-mid" offset="0.55" />
+              <stop class="blade-stop-base" offset="1" />
+            </linearGradient>
+            <radialGradient id="haloFill" cx="220" cy="215" r="168" gradientUnits="userSpaceOnUse">
+              <stop class="halo-stop-1" offset="0" />
+              <stop class="halo-stop-2" offset="0.72" />
+              <stop class="halo-stop-3" offset="0.93" />
+              <stop class="halo-stop-4" offset="1" />
+            </radialGradient>
+            <!-- The path bbox is a few pixels wide while the stroke is 17px;
+                 a tight filter region clips the blur into a visible band. -->
+            <filter id="haloBlur" x="-900%" y="-50%" width="1900%" height="200%">
+              <feGaussianBlur stdDeviation="9" />
+            </filter>
+          </defs>
+
+          <g id="gaugeDecor">
+            <circle class="halo-disc" cx="220" cy="215" r="168"></circle>
+            <circle class="halo-edge" cx="220" cy="215" r="167"></circle>
+            <circle class="halo-core" cx="220" cy="215" r="96"></circle>
+            <path class="halo-glow" d="M364.34 150.74 A158 158 0 0 1 359.51 289.18" filter="url(#haloBlur)"></path>
+            <path class="halo-glow-core" d="M364.19 173.65 A150 150 0 0 1 357.03 276.01"></path>
+            <path class="rainbow-ring" d="M65.85 304 A178 178 0 1 1 374.15 304"></path>
+            <path class="rainbow-ring rainbow-ring-outer" d="M55.77 302.32 A186 186 0 1 1 384.23 302.32"></path>
+            <path class="rainbow-inner" d="M123.01 271 A112 112 0 1 1 316.99 271"></path>
+            <g id="gaugeBands"></g>
+            <text class="gauge-end" id="gaugeSlow" x="41.6" y="322" text-anchor="middle">SLOW</text>
+            <text class="gauge-end" id="gaugeFast" x="398.4" y="322" text-anchor="middle">FAST</text>
+          </g>
+
+          <g id="gaugeTicks"></g>
+          <path id="arcTrack" class="arc-track" pathLength="100" d="M83.17 294 A158 158 0 1 1 356.83 294"></path>
+          <path id="arcLive" class="arc-live" pathLength="100" d="M83.17 294 A158 158 0 1 1 356.83 294"></path>
+          <g id="gaugeLabels" class="gauge-labels" direction="ltr"></g>
+          <g id="needleGroup" class="needle-group">
+            <polygon class="needle" points="218.6,206 220,78 221.4,206 223,215 220,242 217,215"></polygon>
+            <path class="needle-blade"
+              d="M220 66 L223.9 198 Q225.3 209 222.6 218 L220 231 L217.4 218 Q214.7 209 216.1 198 Z"></path>
+            <line class="needle-thin" x1="220" y1="110" x2="220" y2="57"></line>
+            <circle class="halo-pivot" cx="220" cy="110" r="2.4"></circle>
+            <circle class="hub-outer" cx="220" cy="215" r="11"></circle>
+            <circle class="hub-inner" cx="220" cy="215" r="4.5"></circle>
+            <circle class="hub-plate" cx="220" cy="215" r="13"></circle>
+          </g>
+        </svg>
+
+        <div class="readout">
+          <div class="readout-value"><span id="speedValue">0.00</span></div>
+          <div class="readout-unit" id="speedUnit">Mbps</div>
+          <div class="readout-scale mono" id="scaleLabel">SCALE · 0–100</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn primary start" id="startBtn" type="button">
+          <svg class="btn-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3.5 2.5l10 5.5-10 5.5z" fill="currentColor" />
+          </svg>
+          <span data-i18n="start">Start test</span>
+        </button>
+        <button class="btn ghost hidden" id="stopBtn" type="button" data-i18n="stop">Stop</button>
+        <button class="btn ghost hidden" id="shareBtn" type="button">
+          <svg class="btn-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 1v9M4.5 4.5L8 1l3.5 3.5M2.5 9.5v4h11v-4" fill="none" stroke="currentColor" stroke-width="1.4"
+              stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span data-i18n="share">Result card</span>
+        </button>
+      </div>
+
+      <div class="stats">
+        <div class="stat stat-download">
+          <span class="stat-label" data-i18n="dlLabel">Download</span>
+          <span class="stat-value mono num"><span id="statDownload">—</span><span class="stat-unit">Mbps</span></span>
+        </div>
+        <div class="stat stat-upload">
+          <span class="stat-label" data-i18n="ulLabel">Upload</span>
+          <span class="stat-value mono num"><span id="statUpload">—</span><span class="stat-unit">Mbps</span></span>
+        </div>
+        <div class="stat stat-ping">
+          <span class="stat-label" data-i18n="ping">Ping</span>
+          <span class="stat-value mono num"><span id="statPing">—</span><span class="stat-unit">ms</span></span>
+        </div>
+        <div class="stat stat-jitter">
+          <span class="stat-label" data-i18n="jitter">Jitter</span>
+          <span class="stat-value mono num"><span id="statJitter">—</span><span class="stat-unit">ms</span></span>
+        </div>
+        <div class="stat stat-loss">
+          <span class="stat-label" data-i18n="loss">Packet loss</span>
+          <span class="stat-value mono num"><span id="statLoss">—</span><span class="stat-unit">%</span></span>
+        </div>
+      </div>
+
+      <div class="chart">
+        <canvas id="sparkline" aria-hidden="true"></canvas>
+      </div>
+    </section>
+
+    <section class="meta-grid" aria-label="Connection details">
+      <div class="meta-item">
+        <span class="meta-label" data-i18n="ip">IP address</span>
+        <span class="meta-value mono num" id="metaIp">—</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label" data-i18n="isp">ISP</span>
+        <span class="meta-value meta-isp" id="metaIsp">—</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label" data-i18n="location">Location</span>
+        <span class="meta-value" id="metaLocation">—</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label" data-i18n="edge">Edge</span>
+        <span class="meta-value mono num" id="metaEdge">Cloudflare</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="footer-fine"><span class="mono">Internet Speed</span> · <span id="year">2026</span></p>
+    <p class="footer-credit" data-i18n="credit">Built by ԹʍɿՐ ʍԾɧԹʍԹԺ ;⁠)</p>
+  </footer>
+
+  <dialog class="share-dialog" id="shareDialog" aria-labelledby="shareTitle">
+    <div class="share-head">
+      <h3 id="shareTitle" data-i18n="cardTitle">Result card</h3>
+      <button class="icon-btn" id="shareCloseBtn" type="button" aria-label="Close" data-i18n-aria="close">✕</button>
+    </div>
+    <canvas id="shareCanvas" width="1080" height="1350" role="img" aria-label=""></canvas>
+    <div class="share-actions">
+      <button class="btn primary" id="shareDownloadBtn" type="button" data-i18n="saveImage">Download image</button>
+      <button class="btn ghost" id="shareNativeBtn" type="button" data-i18n="shareImage">Share</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <p class="noscript">Enable JavaScript to run the speed test.</p>
+  </noscript>
+</body>
+
+</html>
